@@ -13,11 +13,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Unity.Netcode;
 
-public class PrometeoCarController : MonoBehaviour
+public class PrometeoCarController : NetworkBehaviour
 {
 
-    //CAR SETUP
+      //CAR SETUP
 
       [Space(20)]
       //[Header("CAR SETUP")]
@@ -263,7 +264,7 @@ public class PrometeoCarController : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    protected virtual void Update()
     {
 
       //CAR DATA

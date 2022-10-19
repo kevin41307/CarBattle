@@ -5,20 +5,24 @@ using Unity.Netcode;
 public class NetPlayer : NetworkBehaviour
 {
     [SerializeField] private GameObject carPrefab;
+    private GameObject myCar;
 
     public override void OnNetworkSpawn()
     {
-        Debug.Log("OnNetworkSpawn" + NetworkManager.Singleton.LocalClientId);
-        
         base.OnNetworkSpawn();
-        if( IsOwner )
-        {
-            var car = Instantiate(carPrefab);
-            car.transform.position = Vector3.zero + Random.insideUnitSphere * 2f + Vector3.up *2f;
+        Debug.Log($"OwnerClientId :{OwnerClientId} LocalID:{NetworkManager.Singleton.LocalClientId}");
+        transform.name = $"NetPlayer {OwnerClientId}";
+        if (!IsOwner) return;
+        SpawnMyCarServerRpc();
+    }
 
-            car.GetComponent<NetworkObject>().Spawn();
+    [ServerRpc]
+    void SpawnMyCarServerRpc()
+    {
+        if (!IsServer) return;
+        myCar = Instantiate(carPrefab);
 
-        }
+        myCar.GetComponent<NetworkObject>().SpawnWithOwnership(OwnerClientId);
     }
 
 }

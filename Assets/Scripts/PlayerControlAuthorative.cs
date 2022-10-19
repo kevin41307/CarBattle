@@ -3,7 +3,7 @@ using Unity.Netcode.Samples;
 using UnityEngine;
 
 [RequireComponent(typeof(NetworkObject))]
-[RequireComponent(typeof(ClientNetworkTransform))]
+[RequireComponent(typeof(Unity.Multiplayer.Samples.Utilities.ClientAuthority.ClientNetworkTransform))]
 public class PlayerControlAuthorative : NetworkBehaviour
 {
     [SerializeField]
