@@ -2,8 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
+using Kogaine.Helpers;
+using Unity.Netcode.Components;
+
 public class NetPrometeoCarController : PrometeoCarController
 {
+
+    protected void Awake()
+    {
+        SceneLinkedSMB<NetPrometeoCarController>.Initialise(anim, this);
+    }
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
@@ -23,14 +31,27 @@ public class NetPrometeoCarController : PrometeoCarController
                 useUI = true;
                 carSpeedText = MyUIManager.Instance.speedText;
             }
-            
-            
         }
+        
     }
+
     protected override void Update()
     {
-        if (!IsOwner) return;
+        if ((IsOwner || IsHost || IsClient) && !IsOwner) return;
         base.Update();
+    }
+
+
+    //Animation Events
+    public void AnimEnterIdle()
+    {
+        anim.SetInteger("AttackCount", 0);
+        attackCount = 0;
+    }
+
+    public virtual void AnimAttackVFX()
+    {
 
     }
+
 }

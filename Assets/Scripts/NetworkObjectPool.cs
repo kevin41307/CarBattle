@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.Assertions;
 
 
-public class NetworkObjectPool : Singleton<NetworkObjectPool>
+public class NetworkObjectPool : MonoBehaviourSingleton<NetworkObjectPool>
 {
     [SerializeField]
     NetworkManager m_NetworkManager;

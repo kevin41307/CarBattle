@@ -7,19 +7,19 @@ using UnityEngine.UI;
 public class UIManager : Singleton<UIManager>
 {
     [SerializeField]
-    private Button startServerButton;
+    public Button startServerButton;
 
     [SerializeField]
-    private Button startHostButton;
+    public Button startHostButton;
 
     [SerializeField]
-    private Button startClientButton;
+    public Button startClientButton;
 
     [SerializeField]
     private TextMeshProUGUI playersInGameText;
 
     [SerializeField]
-    private TMP_InputField joinCodeInput;
+    public TMP_InputField joinCodeInput;
 
     [SerializeField]
     private Button executePhysicsButton;

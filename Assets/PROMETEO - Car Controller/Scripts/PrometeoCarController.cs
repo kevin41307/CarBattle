@@ -14,38 +14,43 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Unity.Netcode;
-
+using Kogaine.Helpers;
 public class PrometeoCarController : NetworkBehaviour
 {
 
-      //CAR SETUP
+    //CAR SETUP
+    [SerializeField] protected Animator anim;
+    protected int attackCount = 0;
+    private const float attackCount_MaxResetTimer = .5f;
+    private float attackCountTimer = 0;
 
-      [Space(20)]
-      //[Header("CAR SETUP")]
-      [Space(10)]
-      [Range(20, 190)]
-      public int maxSpeed = 90; //The maximum speed that the car can reach in km/h.
-      [Range(10, 120)]
-      public int maxReverseSpeed = 45; //The maximum speed that the car can reach while going on reverse in km/h.
-      [Range(1, 10)]
-      public int accelerationMultiplier = 2; // How fast the car can accelerate. 1 is a slow acceleration and 10 is the fastest.
-      [Space(10)]
-      [Range(10, 45)]
-      public int maxSteeringAngle = 27; // The maximum angle that the tires can reach while rotating the steering wheel.
-      [Range(0.1f, 1f)]
-      public float steeringSpeed = 0.5f; // How fast the steering wheel turns.
-      [Space(10)]
-      [Range(100, 600)]
-      public int brakeForce = 350; // The strength of the wheel brakes.
-      [Range(1, 10)]
-      public int decelerationMultiplier = 2; // How fast the car decelerates when the user is not using the throttle.
-      [Range(1, 10)]
-      public int handbrakeDriftMultiplier = 5; // How much grip the car loses when the user hit the handbrake.
-      [Space(10)]
-      public Vector3 bodyMassCenter; // This is a vector that contains the center of mass of the car. I recommend to set this value
-                                    // in the points x = 0 and z = 0 of your car. You can select the value that you want in the y axis,
-                                    // however, you must notice that the higher this value is, the more unstable the car becomes.
-                                    // Usually the y value goes from 0 to 1.5.
+
+    [Space(20)]
+    //[Header("CAR SETUP")]
+    [Space(10)]
+    [Range(20, 190)]
+    public int maxSpeed = 90; //The maximum speed that the car can reach in km/h.
+    [Range(10, 120)]
+    public int maxReverseSpeed = 45; //The maximum speed that the car can reach while going on reverse in km/h.
+    [Range(1, 20)]
+    public int accelerationMultiplier = 2; // How fast the car can accelerate. 1 is a slow acceleration and 10 is the fastest.
+    [Space(10)]
+    [Range(10, 45)]
+    public int maxSteeringAngle = 27; // The maximum angle that the tires can reach while rotating the steering wheel.
+    [Range(0.1f, 1f)]
+    public float steeringSpeed = 0.5f; // How fast the steering wheel turns.
+    [Space(10)]
+    [Range(100, 600)]
+    public int brakeForce = 350; // The strength of the wheel brakes.
+    [Range(1, 10)]
+    public int decelerationMultiplier = 2; // How fast the car decelerates when the user is not using the throttle.
+    [Range(1, 10)]
+    public int handbrakeDriftMultiplier = 5; // How much grip the car loses when the user hit the handbrake.
+    [Space(10)]
+    public Vector3 bodyMassCenter; // This is a vector that contains the center of mass of the car. I recommend to set this value
+                                // in the points x = 0 and z = 0 of your car. You can select the value that you want in the y axis,
+                                // however, you must notice that the higher this value is, the more unstable the car becomes.
+                                // Usually the y value goes from 0 to 1.5.
 
     //WHEELS
 
@@ -159,9 +164,11 @@ public class PrometeoCarController : NetworkBehaviour
       WheelFrictionCurve RRwheelFriction;
       float RRWextremumSlip;
 
+
     // Start is called before the first frame update
     void Start()
     {
+
       //In this part, we set the 'carRigidbody' value with the Rigidbody attached to this
       //gameObject. Also, we define the center of mass of the car with the Vector3 given
       //in the inspector.
@@ -266,123 +273,154 @@ public class PrometeoCarController : NetworkBehaviour
     // Update is called once per frame
     protected virtual void Update()
     {
+        //CAR DATA
 
-      //CAR DATA
+        // We determine the speed of the car.
+        carSpeed = (2 * Mathf.PI * frontLeftCollider.radius * frontLeftCollider.rpm * 60) / 1000;
+        // Save the local velocity of the car in the x axis. Used to know if the car is drifting.
+        localVelocityX = transform.InverseTransformDirection(carRigidbody.velocity).x;
+        // Save the local velocity of the car in the z axis. Used to know if the car is going forward or backwards.
+        localVelocityZ = transform.InverseTransformDirection(carRigidbody.velocity).z;
 
-      // We determine the speed of the car.
-      carSpeed = (2 * Mathf.PI * frontLeftCollider.radius * frontLeftCollider.rpm * 60) / 1000;
-      // Save the local velocity of the car in the x axis. Used to know if the car is drifting.
-      localVelocityX = transform.InverseTransformDirection(carRigidbody.velocity).x;
-      // Save the local velocity of the car in the z axis. Used to know if the car is going forward or backwards.
-      localVelocityZ = transform.InverseTransformDirection(carRigidbody.velocity).z;
+        //CAR PHYSICS
 
-      //CAR PHYSICS
+        /*
+        The next part is regarding to the car controller. First, it checks if the user wants to use touch controls (for
+        mobile devices) or analog input controls (WASD + Space).
 
-      /*
-      The next part is regarding to the car controller. First, it checks if the user wants to use touch controls (for
-      mobile devices) or analog input controls (WASD + Space).
+        The following methods are called whenever a certain key is pressed. For example, in the first 'if' we call the
+        method GoForward() if the user has pressed W.
 
-      The following methods are called whenever a certain key is pressed. For example, in the first 'if' we call the
-      method GoForward() if the user has pressed W.
+        In this part of the code we specify what the car needs to do if the user presses W (throttle), S (reverse),
+        A (turn left), D (turn right) or Space bar (handbrake).
+        */
+        if (useTouchControls && touchControlsSetup)
+        {
 
-      In this part of the code we specify what the car needs to do if the user presses W (throttle), S (reverse),
-      A (turn left), D (turn right) or Space bar (handbrake).
-      */
-      if (useTouchControls && touchControlsSetup){
-
-        if(throttlePTI.buttonPressed){
-          CancelInvoke("DecelerateCar");
-          deceleratingCar = false;
-          GoForward();
+        if(throttlePTI.buttonPressed)
+        {
+            CancelInvoke("DecelerateCar");
+            deceleratingCar = false;
+            GoForward();
         }
-        if(reversePTI.buttonPressed){
-          CancelInvoke("DecelerateCar");
-          deceleratingCar = false;
-          GoReverse();
-        }
-
-        if(turnLeftPTI.buttonPressed){
-          TurnLeft();
-        }
-        if(turnRightPTI.buttonPressed){
-          TurnRight();
-        }
-        if(handbrakePTI.buttonPressed){
-          CancelInvoke("DecelerateCar");
-          deceleratingCar = false;
-          Handbrake();
-        }
-        if(!handbrakePTI.buttonPressed){
-          RecoverTraction();
-        }
-        if((!throttlePTI.buttonPressed && !reversePTI.buttonPressed)){
-          ThrottleOff();
-        }
-        if((!reversePTI.buttonPressed && !throttlePTI.buttonPressed) && !handbrakePTI.buttonPressed && !deceleratingCar){
-          InvokeRepeating("DecelerateCar", 0f, 0.1f);
-          deceleratingCar = true;
-        }
-        if(!turnLeftPTI.buttonPressed && !turnRightPTI.buttonPressed && steeringAxis != 0f){
-          ResetSteeringAngle();
+        if(reversePTI.buttonPressed)
+        {
+            CancelInvoke("DecelerateCar");
+            deceleratingCar = false;
+            GoReverse();
         }
 
-      }else{
+        if(turnLeftPTI.buttonPressed)
+        {
+            TurnLeft();
+        }
+        if(turnRightPTI.buttonPressed)
+        {
+            TurnRight();
+        }
+        if(handbrakePTI.buttonPressed)
+        {
+            CancelInvoke("DecelerateCar");
+            deceleratingCar = false;
+            Handbrake();
+        }
+        if(!handbrakePTI.buttonPressed)
+        {
+            RecoverTraction();
+        }
+        if((!throttlePTI.buttonPressed && !reversePTI.buttonPressed))
+        {
+            ThrottleOff();
+        }
+        if((!reversePTI.buttonPressed && !throttlePTI.buttonPressed) && !handbrakePTI.buttonPressed && !deceleratingCar)
+        {
+            InvokeRepeating("DecelerateCar", 0f, 0.1f);
+            deceleratingCar = true;
+        }
+        if(!turnLeftPTI.buttonPressed && !turnRightPTI.buttonPressed && steeringAxis != 0f)
+        {
+            ResetSteeringAngle();
+        }
 
-        if(Input.GetKey(KeyCode.W)){
-          CancelInvoke("DecelerateCar");
-          deceleratingCar = false;
-          GoForward();
+        }else{
+
+        if(Input.GetKey(KeyCode.W))
+        {
+            CancelInvoke("DecelerateCar");
+            deceleratingCar = false;
+            GoForward();
         }
-        if(Input.GetKey(KeyCode.S)){
-          CancelInvoke("DecelerateCar");
-          deceleratingCar = false;
-          GoReverse();
+        if(Input.GetKey(KeyCode.S))
+        {
+            CancelInvoke("DecelerateCar");
+            deceleratingCar = false;
+            GoReverse();
         }
 
-        if(Input.GetKey(KeyCode.A)){
-          TurnLeft();
+        if(Input.GetKey(KeyCode.A))
+        {
+            TurnLeft();
         }
-        if(Input.GetKey(KeyCode.D)){
-          TurnRight();
+        if(Input.GetKey(KeyCode.D))
+        {
+            TurnRight();
         }
-        if(Input.GetKey(KeyCode.Space)){
-          CancelInvoke("DecelerateCar");
-          deceleratingCar = false;
-          Handbrake();
+        if(Input.GetKey(KeyCode.Space))
+        {
+            CancelInvoke("DecelerateCar");
+            deceleratingCar = false;
+            Handbrake();
         }
-        if(Input.GetKeyUp(KeyCode.Space)){
-          RecoverTraction();
+
+        //Kevin Modified
+        
+        if (Input.GetKeyDown(KeyCode.Z))
+        {
+            attackCountTimer = attackCount_MaxResetTimer;
+            attackCount++;
+            anim.SetInteger("AttackCount", attackCount);
         }
-        if((!Input.GetKey(KeyCode.S) && !Input.GetKey(KeyCode.W))){
-          ThrottleOff();
+        attackCountTimer -= Time.deltaTime;
+        if(attackCountTimer <= 0 && attackCount > 0)
+        {
+            attackCount = 0;
+            anim.SetInteger("AttackCount", attackCount);
+        }
+
+        if (Input.GetKeyUp(KeyCode.Space))
+        {
+            RecoverTraction();
+        }
+        if((!Input.GetKey(KeyCode.S) && !Input.GetKey(KeyCode.W)))
+        {
+            ThrottleOff();
         }
         if((!Input.GetKey(KeyCode.S) && !Input.GetKey(KeyCode.W)) && !Input.GetKey(KeyCode.Space) && !deceleratingCar){
-          InvokeRepeating("DecelerateCar", 0f, 0.1f);
-          deceleratingCar = true;
+            InvokeRepeating("DecelerateCar", 0f, 0.1f);
+            deceleratingCar = true;
         }
-        if(!Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.D) && steeringAxis != 0f){
-          ResetSteeringAngle();
+        if(!Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.D) && steeringAxis != 0f)
+        {
+            ResetSteeringAngle();
         }
-
       }
-
-
       // We call the method AnimateWheelMeshes() in order to match the wheel collider movements with the 3D meshes of the wheels.
-      AnimateWheelMeshes();
+      //AnimateWheelMeshes();
 
     }
 
     // This method converts the car speed data from float to string, and then set the text of the UI carSpeedText with this value.
-    public void CarSpeedUI(){
+    public void CarSpeedUI()
+    {
 
-      if(useUI){
-          try{
+        if(useUI){
+            try{
             float absoluteCarSpeed = Mathf.Abs(carSpeed);
             carSpeedText.text = Mathf.RoundToInt(absoluteCarSpeed).ToString();
-          }catch(Exception ex){
+            }catch(Exception ex){
             Debug.LogWarning(ex);
-          }
-      }
+            }
+        }
 
     }
 
@@ -390,33 +428,33 @@ public class PrometeoCarController : NetworkBehaviour
     // pitch of the sound will be at its lowest point. On the other hand, it will sound fast when the car speed is high because
     // the pitch of the sound will be the sum of the initial pitch + the car speed divided by 100f.
     // Apart from that, the tireScreechSound will play whenever the car starts drifting or losing traction.
-    public void CarSounds(){
+    public void CarSounds()
+    {
 
-      if(useSounds){
+        if(useSounds){
         try{
-          if(carEngineSound != null){
+            if(carEngineSound != null){
             float engineSoundPitch = initialCarEngineSoundPitch + (Mathf.Abs(carRigidbody.velocity.magnitude) / 25f);
             carEngineSound.pitch = engineSoundPitch;
-          }
-          if((isDrifting) || (isTractionLocked && Mathf.Abs(carSpeed) > 12f)){
-            if(!tireScreechSound.isPlaying){
-              tireScreechSound.Play();
             }
-          }else if((!isDrifting) && (!isTractionLocked || Mathf.Abs(carSpeed) < 12f)){
+            if((isDrifting) || (isTractionLocked && Mathf.Abs(carSpeed) > 12f)){
+            if(!tireScreechSound.isPlaying){
+                tireScreechSound.Play();
+            }
+            }else if((!isDrifting) && (!isTractionLocked || Mathf.Abs(carSpeed) < 12f)){
             tireScreechSound.Stop();
-          }
+            }
         }catch(Exception ex){
-          Debug.LogWarning(ex);
+            Debug.LogWarning(ex);
         }
-      }else if(!useSounds){
+        }else if(!useSounds){
         if(carEngineSound != null && carEngineSound.isPlaying){
-          carEngineSound.Stop();
+            carEngineSound.Stop();
         }
         if(tireScreechSound != null && tireScreechSound.isPlaying){
-          tireScreechSound.Stop();
+            tireScreechSound.Stop();
         }
-      }
-
+        }
     }
 
     //
@@ -462,34 +500,37 @@ public class PrometeoCarController : NetworkBehaviour
     }
 
     // This method matches both the position and rotation of the WheelColliders with the WheelMeshes.
-    void AnimateWheelMeshes(){
-      try{
-        Quaternion FLWRotation;
-        Vector3 FLWPosition;
-        frontLeftCollider.GetWorldPose(out FLWPosition, out FLWRotation);
-        frontLeftMesh.transform.position = FLWPosition;
-        frontLeftMesh.transform.rotation = FLWRotation;
+    void AnimateWheelMeshes()
+    {
+        try
+        {
+            Quaternion FLWRotation;
+            Vector3 FLWPosition;
+            frontLeftCollider.GetWorldPose(out FLWPosition, out FLWRotation);
+            frontLeftMesh.transform.position = FLWPosition;
+            frontLeftMesh.transform.rotation = FLWRotation;
 
-        Quaternion FRWRotation;
-        Vector3 FRWPosition;
-        frontRightCollider.GetWorldPose(out FRWPosition, out FRWRotation);
-        frontRightMesh.transform.position = FRWPosition;
-        frontRightMesh.transform.rotation = FRWRotation;
+            Quaternion FRWRotation;
+            Vector3 FRWPosition;
+            frontRightCollider.GetWorldPose(out FRWPosition, out FRWRotation);
+            frontRightMesh.transform.position = FRWPosition;
+            frontRightMesh.transform.rotation = FRWRotation;
 
-        Quaternion RLWRotation;
-        Vector3 RLWPosition;
-        rearLeftCollider.GetWorldPose(out RLWPosition, out RLWRotation);
-        rearLeftMesh.transform.position = RLWPosition;
-        rearLeftMesh.transform.rotation = RLWRotation;
+            Quaternion RLWRotation;
+            Vector3 RLWPosition;
+            rearLeftCollider.GetWorldPose(out RLWPosition, out RLWRotation);
+            rearLeftMesh.transform.position = RLWPosition;
+            rearLeftMesh.transform.rotation = RLWRotation;
 
-        Quaternion RRWRotation;
-        Vector3 RRWPosition;
-        rearRightCollider.GetWorldPose(out RRWPosition, out RRWRotation);
-        rearRightMesh.transform.position = RRWPosition;
-        rearRightMesh.transform.rotation = RRWRotation;
-      }catch(Exception ex){
-        Debug.LogWarning(ex);
-      }
+            Quaternion RRWRotation;
+            Vector3 RRWPosition;
+            rearRightCollider.GetWorldPose(out RRWPosition, out RRWRotation);
+            rearRightMesh.transform.position = RRWPosition;
+            rearRightMesh.transform.rotation = RRWRotation;
+        } catch (Exception ex)
+        {
+            Debug.LogWarning(ex);
+        }
     }
 
     //
@@ -771,5 +812,6 @@ public class PrometeoCarController : NetworkBehaviour
         driftingAxis = 0f;
       }
     }
+
 
 }

@@ -6,4 +6,5 @@ using UnityEngine.UI;
 public class MyUIManager : MonoBehaviourSingleton<MyUIManager>
 {
     public Text speedText;
+    public UIManager debugCanvas;
 }
