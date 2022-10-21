@@ -7,9 +7,15 @@ using Unity.Netcode.Components;
 
 public class NetPrometeoCarController : PrometeoCarController
 {
+    [Space, Header("VFXs")]
+    [SerializeField] private Transform attackVFXPivot1;
+    [SerializeField] private Transform attackVFXPivot2;
+    [SerializeField] private Transform attackVFXPivot3;
+    [SerializeField] private GameObject attackVFXPrefab;
 
     protected void Awake()
     {
+
         SceneLinkedSMB<NetPrometeoCarController>.Initialise(anim, this);
     }
     public override void OnNetworkSpawn()
@@ -35,6 +41,23 @@ public class NetPrometeoCarController : PrometeoCarController
         
     }
 
+    public void TriggerAttackVFX(int combo)
+    {
+        switch (combo)
+        {
+            case 1:
+                SpawnerControl.Instance.SpawnTemporaryObject(attackVFXPrefab, attackVFXPivot1.position, attackVFXPivot1.transform.rotation);
+                break;
+            case 2:
+                break;
+            case 3:
+                break;
+            default:
+                break;
+        }
+
+   }
+
     protected override void Update()
     {
         if ((IsOwner || IsHost || IsClient) && !IsOwner) return;
@@ -47,11 +70,6 @@ public class NetPrometeoCarController : PrometeoCarController
     {
         anim.SetInteger("AttackCount", 0);
         attackCount = 0;
-    }
-
-    public virtual void AnimAttackVFX()
-    {
-
     }
 
 }

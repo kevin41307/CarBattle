@@ -63,6 +63,7 @@ public class NetworkObjectPool : MonoBehaviourSingleton<NetworkObjectPool>
 
         // In this simple example pool we just disable objects while they are in the pool. But we could call a function on the object here for more flexibility.
         go.SetActive(false);
+        
         //go.transform.SetParent(transform);
         pooledObjects[prefab].Enqueue(networkObject);
     }

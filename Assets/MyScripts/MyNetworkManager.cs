@@ -6,16 +6,12 @@ public class MyNetworkManager : NetworkManager
 {
     public bool DEBUG_MODE = false;
 
-
-    private void Awake()
-    {
-        NetworkObjectPool.Instance.InitializePool();
-    }
-
 #if UNITY_EDITOR 
+
     private void Start()
     {
-        if(DEBUG_MODE)
+        
+        if (DEBUG_MODE)
         {
             Debug_StartHost();
         }

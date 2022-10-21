@@ -482,6 +482,72 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!1001 &85162587
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4313529959868938014, guid: 3001186d4a9fef847bf4411e885d2964, type: 3}
+      propertyPath: m_Name
+      value: MP_SpawnerControl
+      objectReference: {fileID: 0}
+    - target: {fileID: 4313529959868938015, guid: 3001186d4a9fef847bf4411e885d2964, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2695705436
+      objectReference: {fileID: 0}
+    - target: {fileID: 4313529959868938081, guid: 3001186d4a9fef847bf4411e885d2964, type: 3}
+      propertyPath: m_RootOrder
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 4313529959868938081, guid: 3001186d4a9fef847bf4411e885d2964, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4313529959868938081, guid: 3001186d4a9fef847bf4411e885d2964, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4313529959868938081, guid: 3001186d4a9fef847bf4411e885d2964, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4313529959868938081, guid: 3001186d4a9fef847bf4411e885d2964, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4313529959868938081, guid: 3001186d4a9fef847bf4411e885d2964, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4313529959868938081, guid: 3001186d4a9fef847bf4411e885d2964, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4313529959868938081, guid: 3001186d4a9fef847bf4411e885d2964, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4313529959868938081, guid: 3001186d4a9fef847bf4411e885d2964, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4313529959868938081, guid: 3001186d4a9fef847bf4411e885d2964, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4313529959868938081, guid: 3001186d4a9fef847bf4411e885d2964, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 3001186d4a9fef847bf4411e885d2964, type: 3}
+--- !u!1 &85162588 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4313529959868938014, guid: 3001186d4a9fef847bf4411e885d2964, type: 3}
+  m_PrefabInstance: {fileID: 85162587}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &225406794
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -730,6 +796,10 @@ PrefabInstance:
     - target: {fileID: 1089483791840842749, guid: c3932371d7d2ab943b9293b911ba0a2a, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -535
+      objectReference: {fileID: 0}
+    - target: {fileID: 1089483791981173296, guid: c3932371d7d2ab943b9293b911ba0a2a, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1089483791981173311, guid: c3932371d7d2ab943b9293b911ba0a2a, type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -3376,12 +3446,20 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1632961845482389379, guid: f9bcaed96a7481a4f8cc30999f31d63a, type: 3}
       propertyPath: NetworkConfig.NetworkPrefabs.Array.size
-      value: 2
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 1632961845482389379, guid: f9bcaed96a7481a4f8cc30999f31d63a, type: 3}
       propertyPath: NetworkConfig.NetworkPrefabs.Array.data[1].Prefab
       value: 
       objectReference: {fileID: 6321787856835979452, guid: 43ad7740f79612240997580fd094ff7e, type: 3}
+    - target: {fileID: 1632961845482389379, guid: f9bcaed96a7481a4f8cc30999f31d63a, type: 3}
+      propertyPath: NetworkConfig.NetworkPrefabs.Array.data[2].Prefab
+      value: 
+      objectReference: {fileID: 5304538415589104297, guid: bf85e37aa23db8442879c3e74439be8e, type: 3}
+    - target: {fileID: 1632961845482389379, guid: f9bcaed96a7481a4f8cc30999f31d63a, type: 3}
+      propertyPath: NetworkConfig.NetworkPrefabs.Array.data[3].Prefab
+      value: 
+      objectReference: {fileID: 85162588}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f9bcaed96a7481a4f8cc30999f31d63a, type: 3}
 --- !u!23 &1711813856158174730
