@@ -9,7 +9,7 @@ using Unity.Services.Relay;
 using Unity.Services.Relay.Models;
 using UnityEngine;
 
-public class RelayManager : Singleton<RelayManager>
+public class RelayManager : MonoBehaviourSingleton<RelayManager>
 {
     [SerializeField]
     private string environment = "production";

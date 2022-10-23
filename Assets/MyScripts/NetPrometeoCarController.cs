@@ -8,15 +8,22 @@ using Unity.Netcode.Components;
 public class NetPrometeoCarController : PrometeoCarController
 {
     [Space, Header("VFXs")]
-    [SerializeField] private Transform attackVFXPivot1;
-    [SerializeField] private Transform attackVFXPivot2;
-    [SerializeField] private Transform attackVFXPivot3;
+    [SerializeField] private Transform vfxPivotParent;
     [SerializeField] private GameObject attackVFXPrefab;
+    [SerializeField] private AttackAction attackAction;
+    private List<Transform> attackPivots = new List<Transform>();
 
     protected void Awake()
     {
-
         SceneLinkedSMB<NetPrometeoCarController>.Initialise(anim, this);
+        for (int i = 0; i < attackAction.settings.Count; i++)
+        {
+            GameObject go = new GameObject($"VFX_attackPivot{i+1}");
+            go.transform.SetParent(vfxPivotParent);
+            go.transform.position = attackAction.settings[i].offsetPosition;
+            go.transform.rotation = Quaternion.Euler(attackAction.settings[i].offsetRotation);
+            attackPivots.Add(go.transform);
+        }
     }
     public override void OnNetworkSpawn()
     {
@@ -46,13 +53,15 @@ public class NetPrometeoCarController : PrometeoCarController
         switch (combo)
         {
             case 1:
-                SpawnerControl.Instance.SpawnTemporaryObject(attackVFXPrefab, attackVFXPivot1.position, attackVFXPivot1.transform.rotation);
+                SpawnerControl.Instance.SpawnTemporaryObject(attackVFXPrefab, attackPivots[0].position, attackPivots[0].transform.rotation);
                 break;
             case 2:
+                SpawnerControl.Instance.SpawnTemporaryObject(attackVFXPrefab, attackPivots[1].position, attackPivots[1].transform.rotation);
                 break;
             case 3:
                 break;
             default:
+                Debug.Log($"Combo {combo} VFX has not been set!");
                 break;
         }
 

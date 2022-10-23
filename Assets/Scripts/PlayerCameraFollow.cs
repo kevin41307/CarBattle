@@ -2,7 +2,7 @@ using Cinemachine;
 using DilmerGames.Core.Singletons;
 using UnityEngine;
 
-public class PlayerCameraFollow : Singleton<PlayerCameraFollow>
+public class PlayerCameraFollow : MonoBehaviourSingleton<PlayerCameraFollow>
 {
     [SerializeField]
     private float amplitudeGain = 0.5f;
