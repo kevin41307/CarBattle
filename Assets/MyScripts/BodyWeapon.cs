@@ -27,7 +27,6 @@ public class BodyWeapon : NetworkBehaviour
     {
         myCollider.enabled = true;
         lastActivateTime = Time.time;
-        Debug.Log("SDfdfsfs");
     }
 
     private void OnDisable()
@@ -55,14 +54,17 @@ public class BodyWeapon : NetworkBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        
+        Debug.Log(other.name);
         if (!IsServer) return;
         if (repeatedly) return;
 
-        if (other.CompareTag("ConnectedPlayerCar") )
+        if (other.TryGetComponent(out NetworkObject no) )
         {
-            Debug.Log("Enter other" + other.name);
-            enabled = false;
+            if(no.OwnerClientId == OwnerClientId)
+            {
+                Debug.Log("Enter other" + other.name);
+                enabled = false;
+            }
         }
     }
 
@@ -71,9 +73,9 @@ public class BodyWeapon : NetworkBehaviour
         if (!IsServer) return;
         if (!repeatedly) return;
         Debug.Log("Stay other" + other.name);
-        if (other.CompareTag("ConnectedPlayerCar"))
+        if (other.TryGetComponent(out NetworkObject no))
         {
-            ulong otherId = other.GetComponent<NetworkObject>().OwnerClientId;
+            ulong otherId = no.OwnerClientId;
 
             if (cache.ContainsKey(otherId) )
             {
@@ -81,12 +83,12 @@ public class BodyWeapon : NetworkBehaviour
                 {
                     cache[otherId].count = cache[otherId].count + 1;
                     cache[otherId].lastTouchTime = Time.time;
+                    Debug.Log("Stay other" + other.name + cache[otherId].count);
                 }
             }
             else
             {
-                cache.Add(otherId,
-                new TouchData { lastTouchTime = Time.time, count = 1 });
+                cache.Add(otherId, new TouchData { lastTouchTime = Time.time, count = 1 });
             }
         }
     }
@@ -94,9 +96,12 @@ public class BodyWeapon : NetworkBehaviour
     public void StartDetect(bool repeatedly)
     {
         this.repeatedly = repeatedly;
-        enabled = true;
-        
+        enabled = true;  
     }
-
+    public void StartDetectForAWhile()
+    {
+        //TODO
+        enabled = true;
+    }
 
 }

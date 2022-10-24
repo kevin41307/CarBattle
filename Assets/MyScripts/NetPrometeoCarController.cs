@@ -49,11 +49,11 @@ public class NetPrometeoCarController : PrometeoCarController
                 useUI = true;
                 carSpeedText = MyUIManager.Instance.speedText;
             }
-            gameObject.tag = "MainPlayerCar";
+            //gameObject.tag = "MainPlayerCar";
         }
         else
         {
-            gameObject.tag = "ConnectedPlayerCar";
+            //gameObject.tag = "ConnectedPlayerCar";
         }
         frontBodyWeapon.enabled = false;
         //selfBodyWeapon.gameObject.SetActive(false);
@@ -77,6 +77,8 @@ public class NetPrometeoCarController : PrometeoCarController
                 SpawnerControl.Instance.SpawnTemporaryObject(attackAction.settings[1].vfxPrefab, 
                     attackPivots[1].position, 
                     attackPivots[1].transform.rotation);
+                if (IsOwner)
+                    EnableFrontBodyColliderServerRpc();
                 break;
             case 3:
                 SpawnerControl.Instance.SpawnTemporaryObject(attackAction.settings[2].vfxPrefab, 
@@ -85,7 +87,9 @@ public class NetPrometeoCarController : PrometeoCarController
                     1, 
                     attackAction.settings[2].overrideLifetime, 
                     transform);
-                
+                SpinAttackServerRpc();
+
+
                 break;
             default:
                 Debug.Log($"Combo {combo} VFX has not been set!");
@@ -99,6 +103,12 @@ public class NetPrometeoCarController : PrometeoCarController
     {
         if (!IsServer) return;
         frontBodyWeapon.StartDetect(false);
+    }
+    [ServerRpc]
+    public void SpinAttackServerRpc()
+    {
+        if (!IsServer) return;
+        selfBodyWeapon.StartDetectForAWhile();
     }
 
     protected override void Update()
