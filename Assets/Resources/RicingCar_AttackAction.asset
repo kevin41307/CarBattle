@@ -13,21 +13,39 @@ MonoBehaviour:
   m_Name: RicingCar_AttackAction
   m_EditorClassIdentifier: 
   settings:
-  - combo: 1
+  - isBodyWeapon: 1
+    activateTime: 0.2
+    repeatedly: 0
+    MaxRepeatCount: 1
+    combo: 1
     vfxPrefab: {fileID: 6321787856835979452, guid: 43ad7740f79612240997580fd094ff7e, type: 3}
     triggerTime: 0.4
+    overrideLifetime: -1
     offsetPosition: {x: 0, y: 0.5, z: 2.5}
     offsetRotation: {x: 90, y: 0, z: 0}
+    setParent: 0
     sfx: {fileID: 0}
-  - combo: 2
+  - isBodyWeapon: 1
+    activateTime: 0.2
+    repeatedly: 0
+    MaxRepeatCount: 1
+    combo: 2
     vfxPrefab: {fileID: 6321787856835979452, guid: 43ad7740f79612240997580fd094ff7e, type: 3}
     triggerTime: 0.3
+    overrideLifetime: -1
     offsetPosition: {x: 0, y: 0.5, z: 2.5}
     offsetRotation: {x: -90, y: -90, z: -90}
+    setParent: 0
     sfx: {fileID: 0}
-  - combo: 1
-    vfxPrefab: {fileID: 0}
+  - isBodyWeapon: 1
+    activateTime: 1
+    repeatedly: 1
+    MaxRepeatCount: 5
+    combo: 3
+    vfxPrefab: {fileID: 1342876954156012, guid: 94892aeff53b4f945996fb5d6519229c, type: 3}
     triggerTime: 0
-    offsetPosition: {x: 0, y: 0, z: 0}
-    offsetRotation: {x: 0, y: 0, z: 0}
+    overrideLifetime: 1
+    offsetPosition: {x: 0, y: 0.5, z: 0}
+    offsetRotation: {x: -90, y: 0, z: 0}
+    setParent: 0
     sfx: {fileID: 0}

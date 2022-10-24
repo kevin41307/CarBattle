@@ -13,6 +13,10 @@ public class NetPrometeoCarController : PrometeoCarController
     [SerializeField] private AttackAction attackAction;
     private List<Transform> attackPivots = new List<Transform>();
 
+    [SerializeField] private BodyWeapon frontBodyWeapon;
+    [SerializeField] private BodyWeapon selfBodyWeapon;
+
+
     protected void Awake()
     {
         SceneLinkedSMB<NetPrometeoCarController>.Initialise(anim, this);
@@ -30,6 +34,7 @@ public class NetPrometeoCarController : PrometeoCarController
         base.OnNetworkSpawn();
 
         transform.name = $"Car {GetComponent<NetworkObject>().OwnerClientId}";
+        
         if (IsOwner)
         {
             transform.position = Vector3.zero + Random.insideUnitSphere * 10f;
@@ -44,32 +49,61 @@ public class NetPrometeoCarController : PrometeoCarController
                 useUI = true;
                 carSpeedText = MyUIManager.Instance.speedText;
             }
+            gameObject.tag = "MainPlayerCar";
         }
-        
+        else
+        {
+            gameObject.tag = "ConnectedPlayerCar";
+        }
+        frontBodyWeapon.enabled = false;
+        //selfBodyWeapon.gameObject.SetActive(false);
     }
+
+    
+    
 
     public void TriggerAttackVFX(int combo)
     {
         switch (combo)
         {
             case 1:
-                SpawnerControl.Instance.SpawnTemporaryObject(attackVFXPrefab, attackPivots[0].position, attackPivots[0].transform.rotation);
+                SpawnerControl.Instance.SpawnTemporaryObject(attackAction.settings[0].vfxPrefab, 
+                    attackPivots[0].position, 
+                    attackPivots[0].transform.rotation);
+                if(IsOwner)
+                    EnableFrontBodyColliderServerRpc();
                 break;
             case 2:
-                SpawnerControl.Instance.SpawnTemporaryObject(attackVFXPrefab, attackPivots[1].position, attackPivots[1].transform.rotation);
+                SpawnerControl.Instance.SpawnTemporaryObject(attackAction.settings[1].vfxPrefab, 
+                    attackPivots[1].position, 
+                    attackPivots[1].transform.rotation);
                 break;
             case 3:
+                SpawnerControl.Instance.SpawnTemporaryObject(attackAction.settings[2].vfxPrefab, 
+                    attackPivots[2].position, 
+                    attackPivots[2].transform.rotation, 
+                    1, 
+                    attackAction.settings[2].overrideLifetime, 
+                    transform);
+                
                 break;
             default:
                 Debug.Log($"Combo {combo} VFX has not been set!");
                 break;
         }
 
-   }
+    }
+
+    [ServerRpc]
+    public void EnableFrontBodyColliderServerRpc()
+    {
+        if (!IsServer) return;
+        frontBodyWeapon.StartDetect(false);
+    }
 
     protected override void Update()
     {
-        if ((IsOwner || IsHost || IsClient) && !IsOwner) return;
+        if ((IsServer || IsHost || IsClient) && !IsOwner) return;
         base.Update();
     }
 

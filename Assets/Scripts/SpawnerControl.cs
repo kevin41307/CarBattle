@@ -51,7 +51,7 @@ public class SpawnerControl : NetworkSingleton<SpawnerControl>
         }
     }
 
-    public void SpawnTemporaryObject(GameObject objectPrefab, Vector3 pos, Quaternion rot, int count = 1)
+    public void SpawnTemporaryObject(GameObject objectPrefab, Vector3 pos, Quaternion rot, int count = 1, float lifetime = 0, Transform parent = null)
     {
         if (!IsServer) return;
         for (int i = 0; i < count; i++)
@@ -61,8 +61,9 @@ public class SpawnerControl : NetworkSingleton<SpawnerControl>
             no.transform.rotation = rot;
             no.Spawn();
 
-            float lifeTime = no.GetComponent<ParticleSystem>().main.duration;
-            tempSpawnedObjList.Add(new SpawnedObj { no = no, startTime = Time.time, lifeTime = lifeTime});
+            lifetime = lifetime <= 0 ? no.GetComponent<ParticleSystem>().main.duration : lifetime;
+            if (parent) no.transform.SetParent(parent);
+            tempSpawnedObjList.Add(new SpawnedObj { no = no, startTime = Time.time, lifeTime = lifetime });
         }
 
     }

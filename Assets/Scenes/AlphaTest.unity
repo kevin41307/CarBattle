@@ -1570,6 +1570,8 @@ MonoBehaviour:
   PooledPrefabsList:
   - Prefab: {fileID: 6321787856835979452, guid: 43ad7740f79612240997580fd094ff7e, type: 3}
     PrewarmCount: 10
+  - Prefab: {fileID: 1342876954156012, guid: 94892aeff53b4f945996fb5d6519229c, type: 3}
+    PrewarmCount: 10
 --- !u!114 &717210687 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1632961845482389379, guid: f9bcaed96a7481a4f8cc30999f31d63a, type: 3}
@@ -2101,7 +2103,7 @@ MonoBehaviour:
   m_BlockingObjects: 0
   m_BlockingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 119
 --- !u!114 &1144274276
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3446,7 +3448,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1632961845482389379, guid: f9bcaed96a7481a4f8cc30999f31d63a, type: 3}
       propertyPath: NetworkConfig.NetworkPrefabs.Array.size
-      value: 4
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1632961845482389379, guid: f9bcaed96a7481a4f8cc30999f31d63a, type: 3}
       propertyPath: NetworkConfig.NetworkPrefabs.Array.data[1].Prefab
@@ -3460,6 +3462,10 @@ PrefabInstance:
       propertyPath: NetworkConfig.NetworkPrefabs.Array.data[3].Prefab
       value: 
       objectReference: {fileID: 85162588}
+    - target: {fileID: 1632961845482389379, guid: f9bcaed96a7481a4f8cc30999f31d63a, type: 3}
+      propertyPath: NetworkConfig.NetworkPrefabs.Array.data[4].Prefab
+      value: 
+      objectReference: {fileID: 1342876954156012, guid: 94892aeff53b4f945996fb5d6519229c, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f9bcaed96a7481a4f8cc30999f31d63a, type: 3}
 --- !u!23 &1711813856158174730
