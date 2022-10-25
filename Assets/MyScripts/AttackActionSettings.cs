@@ -16,7 +16,7 @@ public class AttackActionSettings
     [Range(1,5)]
     public int combo;
     [Space]
-    public GameObject vfxPrefab;
+    public TemporaryObj vfxPrefab;
     [Range(0,1)]
     public float triggerTime;
     public float overrideLifetime = -1;

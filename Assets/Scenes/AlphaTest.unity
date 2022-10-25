@@ -1567,11 +1567,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_NetworkManager: {fileID: 717210687}
-  PooledPrefabsList:
-  - Prefab: {fileID: 6321787856835979452, guid: 43ad7740f79612240997580fd094ff7e, type: 3}
-    PrewarmCount: 10
-  - Prefab: {fileID: 1342876954156012, guid: 94892aeff53b4f945996fb5d6519229c, type: 3}
-    PrewarmCount: 10
+  PooledPrefabsList: []
 --- !u!114 &717210687 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1632961845482389379, guid: f9bcaed96a7481a4f8cc30999f31d63a, type: 3}
@@ -3448,16 +3444,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1632961845482389379, guid: f9bcaed96a7481a4f8cc30999f31d63a, type: 3}
       propertyPath: NetworkConfig.NetworkPrefabs.Array.size
-      value: 5
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 1632961845482389379, guid: f9bcaed96a7481a4f8cc30999f31d63a, type: 3}
       propertyPath: NetworkConfig.NetworkPrefabs.Array.data[1].Prefab
       value: 
-      objectReference: {fileID: 6321787856835979452, guid: 43ad7740f79612240997580fd094ff7e, type: 3}
+      objectReference: {fileID: 5304538415589104297, guid: bf85e37aa23db8442879c3e74439be8e, type: 3}
     - target: {fileID: 1632961845482389379, guid: f9bcaed96a7481a4f8cc30999f31d63a, type: 3}
       propertyPath: NetworkConfig.NetworkPrefabs.Array.data[2].Prefab
       value: 
-      objectReference: {fileID: 5304538415589104297, guid: bf85e37aa23db8442879c3e74439be8e, type: 3}
+      objectReference: {fileID: 85162588}
     - target: {fileID: 1632961845482389379, guid: f9bcaed96a7481a4f8cc30999f31d63a, type: 3}
       propertyPath: NetworkConfig.NetworkPrefabs.Array.data[3].Prefab
       value: 

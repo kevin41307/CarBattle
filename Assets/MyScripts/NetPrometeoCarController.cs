@@ -3,16 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
 using Kogaine.Helpers;
-using Unity.Netcode.Components;
 
 public class NetPrometeoCarController : PrometeoCarController
 {
     [Space, Header("VFXs")]
     [SerializeField] private Transform vfxPivotParent;
-    [SerializeField] private GameObject attackVFXPrefab;
     [SerializeField] private AttackAction attackAction;
+    ObjectPooler<TemporaryObj> swordSlashMiniWhites;
+    ObjectPooler<TemporaryObj> swordWhirlwindWhites;
+    //TODO Object Pooler manager?
     private List<Transform> attackPivots = new List<Transform>();
 
+    [Space, Header("Weapons")]
     [SerializeField] private BodyWeapon frontBodyWeapon;
     [SerializeField] private BodyWeapon selfBodyWeapon;
 
@@ -24,10 +26,16 @@ public class NetPrometeoCarController : PrometeoCarController
         {
             GameObject go = new GameObject($"VFX_attackPivot{i+1}");
             go.transform.SetParent(vfxPivotParent);
-            go.transform.position = attackAction.settings[i].offsetPosition;
-            go.transform.rotation = Quaternion.Euler(attackAction.settings[i].offsetRotation);
+            go.transform.localPosition = attackAction.settings[i].offsetPosition;
+            go.transform.localRotation = Quaternion.Euler(attackAction.settings[i].offsetRotation);
             attackPivots.Add(go.transform);
         }
+        swordSlashMiniWhites = new ObjectPooler<TemporaryObj>();
+        swordSlashMiniWhites.Initialize(2, attackAction.settings[0].vfxPrefab);
+
+        swordWhirlwindWhites = new ObjectPooler<TemporaryObj>();
+        swordWhirlwindWhites.Initialize(2, attackAction.settings[2].vfxPrefab);
+
     }
     public override void OnNetworkSpawn()
     {
@@ -59,58 +67,32 @@ public class NetPrometeoCarController : PrometeoCarController
         //selfBodyWeapon.gameObject.SetActive(false);
     }
 
-    
-    
-
     public void TriggerAttackVFX(int combo)
     {
-        
-        /*
         switch (combo)
         {
             case 1:
-                SpawnerControl.Instance.SpawnTemporaryObject(attackAction.settings[0].vfxPrefab, 
-                    attackPivots[0].position, 
-                    attackPivots[0].transform.rotation);
-                if(IsOwner)
-                    EnableFrontBodyColliderServerRpc();
+                swordSlashMiniWhites.GetNew(attackAction.settings[0].activateTime, attackPivots[0]);
+                if(IsServer)
+                    EnableFrontBodyCollider();
                 break;
             case 2:
-                SpawnerControl.Instance.SpawnTemporaryObject(attackAction.settings[1].vfxPrefab, 
-                    attackPivots[1].position, 
-                    attackPivots[1].transform.rotation);
-                if (IsOwner)
-                    EnableFrontBodyColliderServerRpc();
+                swordSlashMiniWhites.GetNew(attackAction.settings[1].activateTime, attackPivots[1]);
+                if (IsServer)
+                    EnableFrontBodyCollider();
                 break;
             case 3:
-                SpawnerControl.Instance.SpawnTemporaryObject(attackAction.settings[2].vfxPrefab,
-                    attackAction.settings[2].offsetPosition, 
-                    attackPivots[2].transform.rotation, 
-                    1, 
-                    attackAction.settings[2].overrideLifetime, 
-                    transform);
+                swordWhirlwindWhites.GetNew(attackAction.settings[2].activateTime, attackPivots[2]);
                 if (IsOwner)
                     SpinAttackServerRpc();
-
-
                 break;
             default:
                 Debug.Log($"Combo {combo} VFX has not been set!");
                 break;
         }
-        */
-
     }
 
-    [ServerRpc]
-    public void SpawnVFXServerRpc()
-    {
-        
-
-    }
-
-    [ServerRpc]
-    public void EnableFrontBodyColliderServerRpc()
+    public void EnableFrontBodyCollider()
     {
         if (!IsServer) return;
         frontBodyWeapon.StartDetect(false);

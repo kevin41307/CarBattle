@@ -660,6 +660,8 @@ MonoBehaviour:
   carSpeed: 0
   isDrifting: 0
   isTractionLocked: 0
+  swordSlashMiniWhitesPrefab: {fileID: -8080276704281854071, guid: 14bee82811e473f428eb51a114d1b3a1, type: 3}
+  swordWhirlwindWhitePrefab: {fileID: -8712287491469596651, guid: c6b7d12351aeb8546bb55d4b64371a94, type: 3}
   vfxPivotParent: {fileID: 3552933051465672397}
   attackVFXPrefab: {fileID: 6321787856835979452, guid: 43ad7740f79612240997580fd094ff7e, type: 3}
   attackAction: {fileID: 11400000, guid: 96ccbbc514a12bf48af013336a71e8b5, type: 2}
