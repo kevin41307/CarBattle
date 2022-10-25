@@ -9,7 +9,7 @@ public class AttackActionSettings
     public float activateTime = 0;
     public bool repeatedly = false;
     [Range(1, 10)]
-    public int MaxRepeatCount = 0;
+    public int maxRepeatCount = 1;
 
 
     [Header("VFX")]

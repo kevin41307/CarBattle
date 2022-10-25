@@ -64,6 +64,8 @@ public class NetPrometeoCarController : PrometeoCarController
 
     public void TriggerAttackVFX(int combo)
     {
+        
+        /*
         switch (combo)
         {
             case 1:
@@ -81,13 +83,14 @@ public class NetPrometeoCarController : PrometeoCarController
                     EnableFrontBodyColliderServerRpc();
                 break;
             case 3:
-                SpawnerControl.Instance.SpawnTemporaryObject(attackAction.settings[2].vfxPrefab, 
-                    attackPivots[2].position, 
+                SpawnerControl.Instance.SpawnTemporaryObject(attackAction.settings[2].vfxPrefab,
+                    attackAction.settings[2].offsetPosition, 
                     attackPivots[2].transform.rotation, 
                     1, 
                     attackAction.settings[2].overrideLifetime, 
                     transform);
-                SpinAttackServerRpc();
+                if (IsOwner)
+                    SpinAttackServerRpc();
 
 
                 break;
@@ -95,6 +98,14 @@ public class NetPrometeoCarController : PrometeoCarController
                 Debug.Log($"Combo {combo} VFX has not been set!");
                 break;
         }
+        */
+
+    }
+
+    [ServerRpc]
+    public void SpawnVFXServerRpc()
+    {
+        
 
     }
 

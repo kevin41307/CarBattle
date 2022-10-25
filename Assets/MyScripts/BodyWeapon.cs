@@ -2,11 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
-using System.Linq;
 
 public class BodyWeapon : NetworkBehaviour
 {
     [SerializeField] private AttackAction attackAction;
+    [Range(0,5)]
+    [SerializeField] private int index;
     private bool repeatedly = false;
     private float lastActivateTime = 0;
     private const float defaultActivateTime = 0.2f;
@@ -48,7 +49,10 @@ public class BodyWeapon : NetworkBehaviour
         }
         else
         {
-
+            if (Time.time > lastActivateTime + attackAction.settings[index].activateTime)
+            {
+                enabled = false;
+            }
         }
     }
 
@@ -76,11 +80,15 @@ public class BodyWeapon : NetworkBehaviour
         if (other.TryGetComponent(out NetworkObject no))
         {
             ulong otherId = no.OwnerClientId;
-
+           
             if (cache.ContainsKey(otherId) )
             {
-                if(cache[otherId].lastTouchTime > Time.time + defaultActivateTime)
+                int count = cache[otherId].count;
+                if (count > attackAction.settings[index].maxRepeatCount) return;
+
+                if (Time.time > cache[otherId].lastTouchTime + defaultActivateTime)
                 {
+
                     cache[otherId].count = cache[otherId].count + 1;
                     cache[otherId].lastTouchTime = Time.time;
                     Debug.Log("Stay other" + other.name + cache[otherId].count);
@@ -102,6 +110,8 @@ public class BodyWeapon : NetworkBehaviour
     {
         //TODO
         enabled = true;
+        repeatedly = true;
+
     }
 
 }

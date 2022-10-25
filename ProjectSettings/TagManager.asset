@@ -6,8 +6,6 @@ TagManager:
   tags:
   - CinemachineTarget
   - Missile
-  - MainPlayerCar
-  - ConnectedPlayerCar
   layers:
   - Default
   - TransparentFX

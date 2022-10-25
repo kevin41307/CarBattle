@@ -9,6 +9,7 @@ public class SpawnerControl : NetworkSingleton<SpawnerControl>
 
     public class SpawnedObj
     {
+        public GameObject prefab;
         public NetworkObject no;
         public float startTime;
         public float lifeTime;
@@ -19,7 +20,12 @@ public class SpawnerControl : NetworkSingleton<SpawnerControl>
 
     private void Start()
     {
-        NetworkObjectPool.Instance.InitializePool();
+        NetworkManager.OnServerStarted += () =>
+        {
+            if(IsServer)
+                NetworkObjectPool.Instance.InitializePool();
+        };
+        
     }
 
     private void FixedUpdate()
@@ -31,7 +37,9 @@ public class SpawnerControl : NetworkSingleton<SpawnerControl>
                 if (temp.disposed) continue;
                 if (Time.time > temp.startTime + temp.lifeTime)
                 {
-                    temp.no.Despawn();
+                    NetworkObjectPool.Instance.ReturnNetworkObject(temp.no, temp.prefab);
+                    if(temp.no.IsSpawned)
+                        temp.no.Despawn();
                     temp.disposed = true;
                 }
             }
@@ -51,21 +59,32 @@ public class SpawnerControl : NetworkSingleton<SpawnerControl>
         }
     }
 
+    //Error need to redesign seperate local and networkobject
     public void SpawnTemporaryObject(GameObject objectPrefab, Vector3 pos, Quaternion rot, int count = 1, float lifetime = 0, Transform parent = null)
     {
         if (!IsServer) return;
         for (int i = 0; i < count; i++)
         {
             var no = NetworkObjectPool.Instance.GetNetworkObject(objectPrefab);
-            no.transform.position = pos;
+
+            //no.transform.localPosition = pos;
+            //no.transform.rotation = rot;
+            //Debug.Log("Parent" + parent);
+            no.transform.localPosition = pos;
             no.transform.rotation = rot;
-            no.Spawn();
+            if( parent)
+            {
+                no.Spawn();
+                no.transform.SetParent(parent,false);
+            }
 
             lifetime = lifetime <= 0 ? no.GetComponent<ParticleSystem>().main.duration : lifetime;
-            if (parent) no.transform.SetParent(parent);
-            tempSpawnedObjList.Add(new SpawnedObj { no = no, startTime = Time.time, lifeTime = lifetime });
+            tempSpawnedObjList.Add(new SpawnedObj { prefab = objectPrefab, no = no, startTime = Time.time, lifeTime = lifetime });
+
+            
         }
 
     }
+
 }
 

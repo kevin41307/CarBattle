@@ -131,8 +131,10 @@ public class NetworkObjectPool : MonoBehaviourSingleton<NetworkObjectPool>
         }
 
         // Here we must reverse the logic in ReturnNetworkObject.
+
         var go = networkObject.gameObject;
-        go.transform.SetParent(null);
+        if(networkObject.IsSpawned)
+            go.transform.SetParent(null);
         go.SetActive(true);
 
         go.transform.position = position;
