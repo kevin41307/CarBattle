@@ -83,6 +83,37 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &2447625151757111009
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 244779932824390002}
+  m_Layer: 7
+  m_Name: DamageHandler
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &244779932824390002
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2447625151757111009}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7518419640913914405}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2759646797470909946
 GameObject:
   m_ObjectHideFlags: 0
@@ -359,6 +390,7 @@ Transform:
   m_Children:
   - {fileID: 8973931905733406146}
   - {fileID: 4968048041705053439}
+  - {fileID: 244779932824390002}
   m_Father: {fileID: 4816126156978405395}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -552,6 +584,8 @@ GameObject:
   - component: {fileID: 4709969124544176971}
   - component: {fileID: 2075638106044590919}
   - component: {fileID: 272418700}
+  - component: {fileID: 1673874939702570278}
+  - component: {fileID: 7079588403894642543}
   m_Layer: 6
   m_Name: MP_Prometheus
   m_TagString: Untagged
@@ -660,10 +694,7 @@ MonoBehaviour:
   carSpeed: 0
   isDrifting: 0
   isTractionLocked: 0
-  swordSlashMiniWhitesPrefab: {fileID: -8080276704281854071, guid: 14bee82811e473f428eb51a114d1b3a1, type: 3}
-  swordWhirlwindWhitePrefab: {fileID: -8712287491469596651, guid: c6b7d12351aeb8546bb55d4b64371a94, type: 3}
   vfxPivotParent: {fileID: 3552933051465672397}
-  attackVFXPrefab: {fileID: 6321787856835979452, guid: 43ad7740f79612240997580fd094ff7e, type: 3}
   attackAction: {fileID: 11400000, guid: 96ccbbc514a12bf48af013336a71e8b5, type: 2}
   frontBodyWeapon: {fileID: 8689894069616001754}
   selfBodyWeapon: {fileID: 1196829222501501796}
@@ -751,6 +782,42 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 2, y: 1.25, z: 5}
   m_Center: {x: 0.023365498, y: 0.87976605, z: -0.12352371}
+--- !u!114 &1673874939702570278
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5304538415589104297}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 227fc572f1f70114ca92e268d1e51a43, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &7079588403894642543
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5304538415589104297}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ffda9564bfe9394baff9196e1315f90, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  invulnerabiltyTime: 0
+  OnReceiveDamage:
+    m_PersistentCalls:
+      m_Calls: []
+  OnHitWhileInvulnerable:
+    m_PersistentCalls:
+      m_Calls: []
+  OnBecomeVulnerable:
+    m_PersistentCalls:
+      m_Calls: []
+  onDamageMessageReceivers:
+  - {fileID: 1673874939702570278}
 --- !u!1 &5588126555954758544
 GameObject:
   m_ObjectHideFlags: 0
