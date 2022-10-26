@@ -18,6 +18,7 @@ public class NetPrometeoCarController : PrometeoCarController
     [SerializeField] private BodyWeapon frontBodyWeapon;
     [SerializeField] private BodyWeapon selfBodyWeapon;
 
+    public const string playerCarPrefix = "PlayerCar";
 
     protected void Awake()
     {
@@ -41,8 +42,9 @@ public class NetPrometeoCarController : PrometeoCarController
     {
         base.OnNetworkSpawn();
 
-        transform.name = $"Car {GetComponent<NetworkObject>().OwnerClientId}";
-        
+        transform.name = $"{playerCarPrefix} {GetComponent<NetworkObject>().OwnerClientId}";
+
+
         if (IsOwner)
         {
             transform.position = Vector3.zero + Random.insideUnitSphere * 10f;
