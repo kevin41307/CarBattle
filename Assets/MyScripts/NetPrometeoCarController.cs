@@ -19,6 +19,7 @@ public class NetPrometeoCarController : PrometeoCarController
     [SerializeField] private Weapon frontBodyWeapon;
     [SerializeField] private Weapon selfBodyWeapon;
     */
+    [Header("Weapon")]
     [SerializeField] private WeaponHandler weaponHandler;
 
     public const string playerCarPrefix = "PlayerCar";
@@ -66,6 +67,7 @@ public class NetPrometeoCarController : PrometeoCarController
             }
 
             //gameObject.tag = "MainPlayerCar";
+            (MyNetworkManager.Singleton as MyNetworkManager).playerCars.Add(OwnerClientId, gameObject);
         }
         else
         {
@@ -74,6 +76,13 @@ public class NetPrometeoCarController : PrometeoCarController
         //frontBodyWeapon.enabled = false;
         //selfBodyWeapon.gameObject.SetActive(false);
         weaponHandler.DisableWeapons();
+
+    }
+
+    public override void OnNetworkDespawn()
+    {
+        (NetworkManager.Singleton as MyNetworkManager).playerCars.Remove(OwnerClientId);
+
     }
 
     public void TriggerAttackVFX(int combo)
@@ -81,47 +90,15 @@ public class NetPrometeoCarController : PrometeoCarController
         switch (combo)
         {
             case 1:
-                weaponHandler.Use(combo - 1, false);
-                /*
-                swordSlashMiniWhites.GetNew(attackAction.settings[0].activateTime, attackPivots[0]);
-                if(IsServer)
-                    frontBodyWeapon.Use(false);
-                */
-                break;
             case 2:
-                weaponHandler.Use(combo - 1, false);
-                /*
-                swordSlashMiniWhites.GetNew(attackAction.settings[1].activateTime, attackPivots[1]);
-                if (IsServer)
-                    frontBodyWeapon.Use(false);
-                */
-                break;
             case 3:
-                weaponHandler.Use(combo - 1, true);
-                /*
-                swordWhirlwindWhites.GetNew(attackAction.settings[2].activateTime, attackPivots[2]);
-                if (IsServer)
-                    selfBodyWeapon.Use(true);
-                */
+                weaponHandler.Use(combo - 1);
                 break;
             default:
                 Debug.Log($"Combo {combo} VFX has not been set!");
                 break;
         }
     }
-
-    public void EnableFrontBodyCollider()
-    {
-        if (!IsServer) return;
-        //frontBodyWeapon.Use(false);
-    }
-    [ServerRpc]
-    public void SpinAttackServerRpc()
-    {
-        if (!IsServer) return;
-        //selfBodyWeapon.Use(true);
-    }
-
     protected override void Update()
     {
         if ((IsServer || IsHost || IsClient) && !IsOwner) return;

@@ -12,8 +12,9 @@ public abstract class Weapon : NetworkBehaviour
     protected ObjectPooler<TemporaryObj> vfx;
     protected TemporaryObj vfxPrefab;
     protected Transform pivot;
+    protected bool repeatedly;
     
-    public abstract void Use(bool continuously);
+    public abstract void Use();
 
     protected virtual void Awake()
     {
@@ -29,5 +30,6 @@ public abstract class Weapon : NetworkBehaviour
         go.transform.localRotation = Quaternion.Euler(attackAction.settings[index].offsetRotation);
         pivot = go.transform;
         vfxPrefab = attackAction.settings[index].vfxPrefab;
+        repeatedly = attackAction.settings[index].repeatedly;
     }
 }

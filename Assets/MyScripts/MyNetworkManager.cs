@@ -4,6 +4,8 @@ using UnityEngine;
 using Unity.Netcode;
 public class MyNetworkManager : NetworkManager
 {
+    
+    public Dictionary<ulong, GameObject> playerCars = new Dictionary<ulong, GameObject>();
     public bool DEBUG_MODE = false;
 
 #if UNITY_EDITOR 

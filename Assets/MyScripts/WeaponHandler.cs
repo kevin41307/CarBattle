@@ -39,8 +39,8 @@ public class WeaponHandler : MonoBehaviour
         }
     }
 
-    public void Use(int index, bool continuously)
+    public void Use(int index)
     {
-        weapons[index].Use(continuously);
+        weapons[index].Use();
     }
 }

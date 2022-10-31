@@ -8,7 +8,6 @@ public class BodyWeapon : Weapon
 {
     [SerializeField] private float forceAmount = 2.5f;
     [SerializeField] private float damagePoint = -10;
-    private bool repeatedly = false;
     private float lastActivateTime = 0;
     private const float defaultActivateTime = 0.2f;
     private Collider myCollider;
@@ -16,6 +15,7 @@ public class BodyWeapon : Weapon
     [SerializeField] private float finishMuliplier = 4f;
     public class Cache
     {
+        public ulong clientId;
         public float lastTouchTime;
         public int count;
     }
@@ -87,7 +87,11 @@ public class BodyWeapon : Weapon
             Vector3 force = direction * forceAmount;
             if (!touchedDict.ContainsKey(other.gameObject))
             {
-                touchedDict.Add(other.gameObject, new Cache { lastTouchTime = Time.time, count = 1 });
+                touchedDict.Add(other.gameObject, new Cache {
+                    clientId = other.GetComponent<NetworkObject>().OwnerClientId,
+                    lastTouchTime = Time.time,
+                    count = 1 
+                });
                 Push(other, force);
                 Damage(other, direction);
             }
@@ -110,37 +114,54 @@ public class BodyWeapon : Weapon
     {
         if (other.TryGetComponent(out Damageable damageable))
         {
-            var msg = new Damageable.DamageMessage(0, damagePoint, direction);
+            var msg = new Damageable.DamageMessage(OwnerClientId, damagePoint, direction);
             damageable.ApplyDamage(msg);
         }
     }
 
     private void Push(Collider other, Vector3 force)
     {
+        if(touchedDict.TryGetValue(other.gameObject, out Cache cache))
+        {
+            PushClientRpc(cache.clientId, force);
+        }
+        else
+        {
+            PushClientRpc(other.GetComponent<NetworkObject>().OwnerClientId, force);
+        }
+        /*
         if (other.TryGetComponent(out Rigidbody rb))
         {
-            Debug.Log("ApplyForce at " + other.name);
+
             //rb.AddExplosionForce(force.magnitude, transform.position, radius, 1f, ForceMode.VelocityChange);
             rb.AddForceAtPosition(force, transform.position, ForceMode.VelocityChange);
         }
+        */
     }
     [ClientRpc]
-    private void PushClientRpc()
+    private void PushClientRpc(ulong targetId, Vector3 force)
     {
-
+        if((NetworkManager.Singleton as MyNetworkManager).playerCars.TryGetValue( targetId, out GameObject targetCar))
+        {
+            if( targetCar.TryGetComponent(out Rigidbody rb))
+            {
+                Debug.Log("ApplyForce at " + targetCar.name);
+                rb.AddForceAtPosition(force, transform.position, ForceMode.VelocityChange);
+            }
+        }
+        
     }
 
-    public void StartDetect(bool repeatedly)
+    public void StartDetect()
     {
         vfx.GetNew(attackAction.settings[index].activateTime, pivot);
         if(IsServer)
         {
             enabled = true;
-            this.repeatedly = repeatedly;
         }
     }
-    public override void Use(bool continuous)
+    public override void Use()
     {
-        StartDetect(continuous);
+        StartDetect();
     }
 }
