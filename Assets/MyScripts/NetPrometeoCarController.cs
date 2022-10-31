@@ -6,6 +6,7 @@ using Kogaine.Helpers;
 
 public class NetPrometeoCarController : PrometeoCarController
 {
+    /*
     [Space, Header("VFXs")]
     [SerializeField] private Transform vfxPivotParent;
     [SerializeField] private AttackAction attackAction;
@@ -15,14 +16,17 @@ public class NetPrometeoCarController : PrometeoCarController
     private List<Transform> attackPivots = new List<Transform>();
 
     [Space, Header("Weapons")]
-    [SerializeField] private BodyWeapon frontBodyWeapon;
-    [SerializeField] private BodyWeapon selfBodyWeapon;
+    [SerializeField] private Weapon frontBodyWeapon;
+    [SerializeField] private Weapon selfBodyWeapon;
+    */
+    [SerializeField] private WeaponHandler weaponHandler;
 
     public const string playerCarPrefix = "PlayerCar";
 
     protected void Awake()
     {
         SceneLinkedSMB<NetPrometeoCarController>.Initialise(anim, this);
+        /*
         for (int i = 0; i < attackAction.settings.Count; i++)
         {
             GameObject go = new GameObject($"VFX_attackPivot{i+1}");
@@ -36,6 +40,7 @@ public class NetPrometeoCarController : PrometeoCarController
 
         swordWhirlwindWhites = new ObjectPooler<TemporaryObj>();
         swordWhirlwindWhites.Initialize(2, attackAction.settings[2].vfxPrefab);
+        */
 
     }
     public override void OnNetworkSpawn()
@@ -59,14 +64,16 @@ public class NetPrometeoCarController : PrometeoCarController
                 useUI = true;
                 carSpeedText = MyUIManager.Instance.speedText;
             }
+
             //gameObject.tag = "MainPlayerCar";
         }
         else
         {
             //gameObject.tag = "ConnectedPlayerCar";
         }
-        frontBodyWeapon.enabled = false;
+        //frontBodyWeapon.enabled = false;
         //selfBodyWeapon.gameObject.SetActive(false);
+        weaponHandler.DisableWeapons();
     }
 
     public void TriggerAttackVFX(int combo)
@@ -74,19 +81,28 @@ public class NetPrometeoCarController : PrometeoCarController
         switch (combo)
         {
             case 1:
+                weaponHandler.Use(combo - 1, false);
+                /*
                 swordSlashMiniWhites.GetNew(attackAction.settings[0].activateTime, attackPivots[0]);
                 if(IsServer)
-                    EnableFrontBodyCollider();
+                    frontBodyWeapon.Use(false);
+                */
                 break;
             case 2:
+                weaponHandler.Use(combo - 1, false);
+                /*
                 swordSlashMiniWhites.GetNew(attackAction.settings[1].activateTime, attackPivots[1]);
                 if (IsServer)
-                    EnableFrontBodyCollider();
+                    frontBodyWeapon.Use(false);
+                */
                 break;
             case 3:
+                weaponHandler.Use(combo - 1, true);
+                /*
                 swordWhirlwindWhites.GetNew(attackAction.settings[2].activateTime, attackPivots[2]);
-                if (IsOwner)
-                    SpinAttackServerRpc();
+                if (IsServer)
+                    selfBodyWeapon.Use(true);
+                */
                 break;
             default:
                 Debug.Log($"Combo {combo} VFX has not been set!");
@@ -97,13 +113,13 @@ public class NetPrometeoCarController : PrometeoCarController
     public void EnableFrontBodyCollider()
     {
         if (!IsServer) return;
-        frontBodyWeapon.StartDetect(false);
+        //frontBodyWeapon.Use(false);
     }
     [ServerRpc]
     public void SpinAttackServerRpc()
     {
         if (!IsServer) return;
-        selfBodyWeapon.StartDetectForAWhile();
+        //selfBodyWeapon.Use(true);
     }
 
     protected override void Update()

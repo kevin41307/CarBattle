@@ -13,8 +13,7 @@ MonoBehaviour:
   m_Name: RicingCar_AttackAction
   m_EditorClassIdentifier: 
   settings:
-  - isBodyWeapon: 1
-    activateTime: 0.2
+  - activateTime: 0.2
     repeatedly: 0
     maxRepeatCount: 1
     combo: 1
@@ -25,8 +24,7 @@ MonoBehaviour:
     offsetRotation: {x: 90, y: 0, z: 0}
     setParent: 0
     sfx: {fileID: 0}
-  - isBodyWeapon: 1
-    activateTime: 0.2
+  - activateTime: 0.2
     repeatedly: 0
     maxRepeatCount: 1
     combo: 2
@@ -37,8 +35,7 @@ MonoBehaviour:
     offsetRotation: {x: -90, y: -90, z: -90}
     setParent: 0
     sfx: {fileID: 0}
-  - isBodyWeapon: 1
-    activateTime: 0.9
+  - activateTime: 0.9
     repeatedly: 1
     maxRepeatCount: 5
     combo: 3

@@ -1,27 +1,30 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using Unity.Netcode;
+using UnityEngine;
 
-public class BodyWeapon : NetworkBehaviour
+
+public class BodyWeapon : Weapon
 {
-    [SerializeField] private AttackAction attackAction;
-    [Range(0,5)]
-    [SerializeField] private int index;
+    [SerializeField] private float forceAmount = 2.5f;
+    [SerializeField] private float damagePoint = -10;
     private bool repeatedly = false;
     private float lastActivateTime = 0;
     private const float defaultActivateTime = 0.2f;
     private Collider myCollider;
-    public class TouchData
+    private int maxTouchCount = 5;
+    [SerializeField] private float finishMuliplier = 4f;
+    public class Cache
     {
-        public float lastTouchTime = 0;
-        public int count = 0;
+        public float lastTouchTime;
+        public int count;
     }
 
-    Dictionary<ulong, TouchData> cache = new Dictionary<ulong, TouchData>();
+    private Dictionary<GameObject, Cache> touchedDict = new Dictionary<GameObject, Cache>();
 
-    private void Awake()
+    protected override void Awake()
     {
+        base.Awake();
         myCollider = GetComponent<Collider>();
     }
     private void OnEnable()
@@ -34,12 +37,12 @@ public class BodyWeapon : NetworkBehaviour
     {
         myCollider.enabled = false;
         lastActivateTime = 0f;
-        cache.Clear();
+        touchedDict.Clear();
     }
 
     private void Update()
     {
-
+        if (!IsServer) return;
         if (!repeatedly)
         {
             if(Time.time > lastActivateTime + defaultActivateTime )
@@ -61,57 +64,83 @@ public class BodyWeapon : NetworkBehaviour
         Debug.Log(other.name);
         if (!IsServer) return;
         if (repeatedly) return;
-
-        if (other.TryGetComponent(out NetworkObject no) )
+        //if (!other.TryGetComponent(out NetworkObject no)) return;
+        if (other.name.Contains(NetPrometeoCarController.playerCarPrefix))
         {
-            if(no.OwnerClientId == OwnerClientId)
-            {
-                Debug.Log("Enter other" + other.name);
-                enabled = false;
-            }
+            Vector3 direction = other.transform.position - transform.position;
+            Vector3 force = direction * forceAmount;
+
+            Push(other, force);
+            Damage(other, force);
         }
+
     }
 
     private void OnTriggerStay(Collider other)
     {
         if (!IsServer) return;
         if (!repeatedly) return;
-        Debug.Log("Stay other" + other.name);
-        if (other.TryGetComponent(out NetworkObject no))
+        //if (!other.TryGetComponent(out NetworkObject no)) return;
+        if (other.name.Contains(NetPrometeoCarController.playerCarPrefix))
         {
-            ulong otherId = no.OwnerClientId;
-           
-            if (cache.ContainsKey(otherId) )
+            Vector3 direction = other.transform.position - transform.position;
+            Vector3 force = direction * forceAmount;
+            if (!touchedDict.ContainsKey(other.gameObject))
             {
-                int count = cache[otherId].count;
-                if (count > attackAction.settings[index].maxRepeatCount) return;
-
-                if (Time.time > cache[otherId].lastTouchTime + defaultActivateTime)
-                {
-
-                    cache[otherId].count = cache[otherId].count + 1;
-                    cache[otherId].lastTouchTime = Time.time;
-                    Debug.Log("Stay other" + other.name + cache[otherId].count);
-                }
+                touchedDict.Add(other.gameObject, new Cache { lastTouchTime = Time.time, count = 1 });
+                Push(other, force);
+                Damage(other, direction);
             }
             else
             {
-                cache.Add(otherId, new TouchData { lastTouchTime = Time.time, count = 1 });
+                if (touchedDict[other.gameObject].count > maxTouchCount) return;
+                if (Time.time > touchedDict[other.gameObject].lastTouchTime + defaultActivateTime)
+                {
+                    Push(other, (force * ((touchedDict[other.gameObject].count == maxTouchCount) ? finishMuliplier : 1)));
+                    Damage(other, direction);
+                    //ForceMode.Force ~ 100000f À»°h
+                    //ForceMode.Force ~ 150000f À»­¸
+                    touchedDict[other.gameObject].lastTouchTime = Time.time;
+                    touchedDict[other.gameObject].count += 1;
+                }
             }
         }
+    }
+    private void Damage(Collider other, Vector3 direction)
+    {
+        if (other.TryGetComponent(out Damageable damageable))
+        {
+            var msg = new Damageable.DamageMessage(0, damagePoint, direction);
+            damageable.ApplyDamage(msg);
+        }
+    }
+
+    private void Push(Collider other, Vector3 force)
+    {
+        if (other.TryGetComponent(out Rigidbody rb))
+        {
+            Debug.Log("ApplyForce at " + other.name);
+            //rb.AddExplosionForce(force.magnitude, transform.position, radius, 1f, ForceMode.VelocityChange);
+            rb.AddForceAtPosition(force, transform.position, ForceMode.VelocityChange);
+        }
+    }
+    [ClientRpc]
+    private void PushClientRpc()
+    {
+
     }
 
     public void StartDetect(bool repeatedly)
     {
-        this.repeatedly = repeatedly;
-        enabled = true;  
+        vfx.GetNew(attackAction.settings[index].activateTime, pivot);
+        if(IsServer)
+        {
+            enabled = true;
+            this.repeatedly = repeatedly;
+        }
     }
-    public void StartDetectForAWhile()
+    public override void Use(bool continuous)
     {
-        //TODO
-        enabled = true;
-        repeatedly = true;
-
+        StartDetect(continuous);
     }
-
 }

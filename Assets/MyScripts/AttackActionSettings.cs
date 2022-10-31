@@ -4,13 +4,11 @@ using UnityEngine;
 public class AttackActionSettings
 {
     [Header("Collider")]
-    public bool isBodyWeapon = false;
     [Range(0, 5)]
     public float activateTime = 0;
     public bool repeatedly = false;
     [Range(1, 10)]
     public int maxRepeatCount = 1;
-
 
     [Header("VFX")]
     [Range(1,5)]

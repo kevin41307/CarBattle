@@ -12,20 +12,38 @@ public class ContinuousBomb : MonoBehaviour
     [SerializeField] private float forceAmount = 2;
     [SerializeField] private float damagePoint = -10;
     [SerializeField] private float finishMuliplier = 10f;
+    [SerializeField] private float activeTime = 0;
 
+    private int maxTouchCount = 5;
+    private float radius = 2f;
     private Dictionary<GameObject, Cache> touchedDict = new Dictionary<GameObject, Cache>();
     private const float defaultActivateTime = 0.2f;
-    public int maxTouchCount = 5;
-    public float radius = 2f;
+    private Collider myCollider;
+    private float lastActivateTime = 0;
 
+    private void Awake()
+    {
+        myCollider = GetComponent<Collider>();
+    }
     private void OnEnable()
     {
-        
+        myCollider.enabled = true;
+        lastActivateTime = Time.time;
     }
 
     private void OnDisable()
     {
+        myCollider.enabled = false;
+        lastActivateTime = 0f;
         touchedDict.Clear();
+    }
+
+    private void Update()
+    {
+        if (Time.time > lastActivateTime + activeTime)
+        {
+            enabled = false;
+        }
     }
 
     private void OnTriggerStay(Collider other)
@@ -72,5 +90,21 @@ public class ContinuousBomb : MonoBehaviour
             Debug.Log("ApplyForce at " + other.name);
             rb.AddExplosionForce(force.magnitude, transform.position, radius, 1f, ForceMode.VelocityChange);
         }
+    }
+    public void Setup(CollideWeapon setting)
+    {
+        radius = setting.radius;
+        forceAmount = setting.forceAmount;
+        damagePoint = setting.damagePoint;
+        activeTime = setting.activeTime;
+        maxTouchCount = setting.maxRepeatCount;
+    }
+
+
+    public void StartDetectForAWhile()
+    {
+        //TODO
+        enabled = true;
+
     }
 }
