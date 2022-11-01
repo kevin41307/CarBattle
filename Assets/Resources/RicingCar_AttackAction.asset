@@ -17,32 +17,35 @@ MonoBehaviour:
     repeatedly: 0
     maxRepeatCount: 1
     combo: 1
-    vfxPrefab: {fileID: 5051852335565518232, guid: 14bee82811e473f428eb51a114d1b3a1, type: 3}
+    vfxSwingPrefab: {fileID: 5051852335565518232, guid: 14bee82811e473f428eb51a114d1b3a1, type: 3}
     triggerTime: 0.4
     overrideLifetime: -1
     offsetPosition: {x: 0, y: 0.5, z: 2.5}
     offsetRotation: {x: 90, y: 0, z: 0}
     setParent: 0
+    vfxHitPrefab: {fileID: 7119781692361739142, guid: eb10e9fbee262eb43b397d4888eebc83, type: 3}
     sfx: {fileID: 0}
   - activateTime: 0.2
     repeatedly: 0
     maxRepeatCount: 1
     combo: 2
-    vfxPrefab: {fileID: 5051852335565518232, guid: 14bee82811e473f428eb51a114d1b3a1, type: 3}
+    vfxSwingPrefab: {fileID: 5051852335565518232, guid: 14bee82811e473f428eb51a114d1b3a1, type: 3}
     triggerTime: 0.3
     overrideLifetime: -1
     offsetPosition: {x: 0, y: 0.5, z: 2.5}
     offsetRotation: {x: -90, y: -90, z: -90}
     setParent: 0
+    vfxHitPrefab: {fileID: 7119781692361739142, guid: eb10e9fbee262eb43b397d4888eebc83, type: 3}
     sfx: {fileID: 0}
   - activateTime: 0.9
     repeatedly: 1
     maxRepeatCount: 5
     combo: 3
-    vfxPrefab: {fileID: -4523024807746294592, guid: c6b7d12351aeb8546bb55d4b64371a94, type: 3}
+    vfxSwingPrefab: {fileID: -4523024807746294592, guid: c6b7d12351aeb8546bb55d4b64371a94, type: 3}
     triggerTime: 0
     overrideLifetime: 1
     offsetPosition: {x: 0, y: 0.5, z: 0}
     offsetRotation: {x: -90, y: 0, z: 0}
-    setParent: 0
+    setParent: 1
+    vfxHitPrefab: {fileID: 7119781692361739142, guid: eb10e9fbee262eb43b397d4888eebc83, type: 3}
     sfx: {fileID: 0}

@@ -55,6 +55,22 @@ public class ObjectPooler<T> where T : MonoBehaviour, ITemped<T>
             instance.StartCoroutine(StartGiveBack(instance, expiredTime));
         return instance;
     }
+
+    public T GetNew(Transform parent) //TODO: auto extend pool size?
+    {
+        T instance = GetNew();
+        if (instance != null)
+        {
+            if (instance.transform.parent != parent)
+            {
+                instance.transform.SetParent(parent);
+                instance.transform.localPosition = Vector3.zero;
+                instance.transform.localRotation = Quaternion.identity;
+            }
+        }
+        return instance;
+    }
+
     public T GetNew(float expiredTime, Transform parent) //TODO: auto extend pool size?
     {
         T instance = GetNew();
@@ -68,8 +84,6 @@ public class ObjectPooler<T> where T : MonoBehaviour, ITemped<T>
                 instance.transform.localRotation = Quaternion.identity;
             }
         }
-            
-        
         return instance;
     }
     public T[] GetNews(bool active = true)

@@ -26,6 +26,12 @@ public class BodyWeapon : Weapon
     {
         base.Awake();
         myCollider = GetComponent<Collider>();
+        if (vfxHitPrefab)
+        {
+            Debug.Log("dasdad");
+            vfx_hitPool = new ObjectPooler<TemporaryObj>();
+            vfx_hitPool.Initialize(maxTouchCount, vfxHitPrefab);
+        }
     }
     private void OnEnable()
     {
@@ -116,6 +122,7 @@ public class BodyWeapon : Weapon
         {
             var msg = new Damageable.DamageMessage(OwnerClientId, damagePoint, direction);
             damageable.ApplyDamage(msg);
+            PlayVFX(vfx_hitPool);
         }
     }
 
@@ -138,6 +145,15 @@ public class BodyWeapon : Weapon
         }
         */
     }
+
+    private void PlayVFX<T>(ObjectPooler<T> pool) where T : MonoBehaviour, ITemped<T>
+    {
+        pool.GetNew();
+    }
+    private void PlayVFX<T>(ObjectPooler<T> pool, Transform parent) where T : MonoBehaviour, ITemped<T>
+    {
+        pool.GetNew(parent);
+    }
     [ClientRpc]
     private void PushClientRpc(ulong targetId, Vector3 force)
     {
@@ -154,8 +170,8 @@ public class BodyWeapon : Weapon
 
     public void StartDetect()
     {
-        vfx.GetNew(attackAction.settings[index].activateTime, pivot);
-        if(IsServer)
+        PlayVFX(vfx_swingPool, pivot);
+        if (IsServer)
         {
             enabled = true;
         }

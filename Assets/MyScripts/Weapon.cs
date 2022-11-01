@@ -9,8 +9,10 @@ public abstract class Weapon : NetworkBehaviour
     [SerializeField] protected AttackAction attackAction;
     [Range(0, 5)]
     [SerializeField] protected int index;
-    protected ObjectPooler<TemporaryObj> vfx;
-    protected TemporaryObj vfxPrefab;
+    protected ObjectPooler<TemporaryObj> vfx_swingPool;
+    protected TemporaryObj vfxSwingPrefab;
+    protected ObjectPooler<TemporaryObj> vfx_hitPool;
+    protected TemporaryObj vfxHitPrefab;
     protected Transform pivot;
     protected bool repeatedly;
     
@@ -18,8 +20,11 @@ public abstract class Weapon : NetworkBehaviour
 
     protected virtual void Awake()
     {
-        vfx = new ObjectPooler<TemporaryObj>();
-        vfx.Initialize(2, vfxPrefab);
+        if (vfxSwingPrefab)
+        {
+            vfx_swingPool = new ObjectPooler<TemporaryObj>();
+            vfx_swingPool.Initialize(2, vfxSwingPrefab);
+        }
     }
 
     public void Setup(Transform vfxPivotsParent)
@@ -29,7 +34,7 @@ public abstract class Weapon : NetworkBehaviour
         go.transform.localPosition = attackAction.settings[index].offsetPosition;
         go.transform.localRotation = Quaternion.Euler(attackAction.settings[index].offsetRotation);
         pivot = go.transform;
-        vfxPrefab = attackAction.settings[index].vfxPrefab;
+        vfxSwingPrefab = attackAction.settings[index].vfxSwingPrefab;
         repeatedly = attackAction.settings[index].repeatedly;
     }
 }
