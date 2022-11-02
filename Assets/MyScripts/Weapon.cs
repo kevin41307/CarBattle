@@ -13,9 +13,10 @@ public abstract class Weapon : NetworkBehaviour
     protected TemporaryObj vfxSwingPrefab;
     protected ObjectPooler<TemporaryObj> vfx_hitPool;
     protected TemporaryObj vfxHitPrefab;
-    protected Transform pivot;
+    protected Transform pivot = null;
     protected bool repeatedly;
-    
+    protected int maxRepeatCount = 5;
+
     public abstract void Use();
 
     protected virtual void Awake()
@@ -24,6 +25,24 @@ public abstract class Weapon : NetworkBehaviour
         {
             vfx_swingPool = new ObjectPooler<TemporaryObj>();
             vfx_swingPool.Initialize(2, vfxSwingPrefab);
+
+            foreach (var vfx in vfx_swingPool.instances)
+            {
+                if (attackAction.settings[index].overrideLifetime > 0)
+                    vfx.Setup(attackAction.settings[index].overrideLifetime);
+                else
+                    vfx.Setup();
+            }
+        }
+        if (vfxHitPrefab)
+        {
+            vfx_hitPool = new ObjectPooler<TemporaryObj>();
+            int count = maxRepeatCount > 1 ? maxRepeatCount : 2;
+            vfx_hitPool.Initialize(count, vfxHitPrefab);
+            foreach (var vfx in vfx_hitPool.instances)
+            {
+                vfx.Setup();
+            }
         }
     }
 
@@ -36,5 +55,7 @@ public abstract class Weapon : NetworkBehaviour
         pivot = go.transform;
         vfxSwingPrefab = attackAction.settings[index].vfxSwingPrefab;
         repeatedly = attackAction.settings[index].repeatedly;
+        vfxHitPrefab = attackAction.settings[index].vfxHitPrefab;
+        maxRepeatCount = attackAction.settings[index].maxRepeatCount;
     }
 }

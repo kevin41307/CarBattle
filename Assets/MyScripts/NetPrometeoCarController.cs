@@ -67,7 +67,7 @@ public class NetPrometeoCarController : PrometeoCarController
             }
 
             //gameObject.tag = "MainPlayerCar";
-            (MyNetworkManager.Singleton as MyNetworkManager).playerCars.Add(OwnerClientId, gameObject);
+            (NetworkManager.Singleton as MyNetworkManager).playerCars.Add(OwnerClientId, gameObject);
         }
         else
         {

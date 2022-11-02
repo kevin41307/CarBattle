@@ -8,21 +8,21 @@ public class TemporaryObj : MonoBehaviour, ITemped<TemporaryObj>
     public float expiredTime = -1;
     public int poolID { set; get; }
     public ObjectPooler<TemporaryObj> pool { set; get; }
-    public bool autoGiveBack = true;
+    private bool autoGiveBack = true;
     WaitForSeconds givebackWaitForSeconds;
-
-    private void Awake()
-    {
-        Setup();
-    }
 
     public void Setup()
     {
         if (TryGetComponent(out ParticleSystem ps))
         {
             expiredTime = ps.main.duration;
-            givebackWaitForSeconds = new WaitForSeconds(expiredTime);
         }
+        givebackWaitForSeconds = new WaitForSeconds(expiredTime);
+    }
+    public void Setup(float expiredTime)
+    {
+        this.expiredTime = expiredTime;
+        givebackWaitForSeconds = new WaitForSeconds(expiredTime);
     }
 
     private void OnEnable()
