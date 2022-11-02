@@ -410,7 +410,7 @@ public class PrometeoCarController : NetworkBehaviour
     }
 
     // This method converts the car speed data from float to string, and then set the text of the UI carSpeedText with this value.
-    public void CarSpeedUI()
+    public virtual void CarSpeedUI()
     {
 
         if(useUI){
@@ -486,7 +486,6 @@ public class PrometeoCarController : NetworkBehaviour
     //The following method takes the front car wheels to their default position (rotation = 0). The speed of this movement will depend
     // on the steeringSpeed variable.
     public void ResetSteeringAngle(){
-        Debug.Log("steeringAxis" + steeringAxis);
         if(steeringAxis < 0f){
         steeringAxis = steeringAxis + (Time.deltaTime * 10f * steeringSpeed);
         }else if(steeringAxis > 0f){

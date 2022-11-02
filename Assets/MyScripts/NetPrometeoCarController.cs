@@ -21,9 +21,10 @@ public class NetPrometeoCarController : PrometeoCarController
     */
     [Header("Weapon")]
     [SerializeField] private WeaponHandler weaponHandler;
-
+    [SerializeField] private UltimateCircularHealthBar healthBar; 
     public const string playerCarPrefix = "PlayerCar";
 
+    private float velocity;
     protected void Awake()
     {
         SceneLinkedSMB<NetPrometeoCarController>.Initialise(anim, this);
@@ -42,7 +43,7 @@ public class NetPrometeoCarController : PrometeoCarController
         swordWhirlwindWhites = new ObjectPooler<TemporaryObj>();
         swordWhirlwindWhites.Initialize(2, attackAction.settings[2].vfxPrefab);
         */
-
+        healthBar = MyUIManager.Instance.healthBar;
     }
     public override void OnNetworkSpawn()
     {
@@ -82,7 +83,6 @@ public class NetPrometeoCarController : PrometeoCarController
     public override void OnNetworkDespawn()
     {
         (NetworkManager.Singleton as MyNetworkManager).playerCars.Remove(OwnerClientId);
-
     }
 
     public void TriggerAttackVFX(int combo)
@@ -105,6 +105,22 @@ public class NetPrometeoCarController : PrometeoCarController
         base.Update();
     }
 
+
+
+    private void FixedUpdate()
+    {
+        CarSpeedBar();
+    }
+    public void CarSpeedBar()
+    {
+        if (useUI && healthBar)
+        {
+
+            float count = healthBar.SegmentCount - 1;
+            float percent = ((1 - carSpeed / maxSpeed) * count ) + 1;
+            healthBar.RemovedSegments = Mathf.SmoothDamp(healthBar.RemovedSegments, percent, ref velocity, 10 * Time.fixedDeltaTime);
+        }
+    }
 
     //Animation Events
     public void AnimEnterIdle()

@@ -7,4 +7,5 @@ public class MyUIManager : MonoBehaviourSingleton<MyUIManager>
 {
     public Text speedText;
     public UIManager debugCanvas;
+    public UltimateCircularHealthBar healthBar;
 }
