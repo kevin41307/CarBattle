@@ -73,7 +73,7 @@ public class BodyWeapon : Weapon
             drawLineStart = other.transform.position;
             drawLineEnd = transform.position;
             Vector3 force = direction * forceAmount;
-            force.y = 0;
+
             Push(other, force);
             Damage(other, force);
         }
@@ -90,7 +90,7 @@ public class BodyWeapon : Weapon
             drawLineStart = other.transform.position;
             drawLineEnd = transform.position;
             Vector3 force = direction * forceAmount;
-            force.y = 0;
+
             if (!touchedDict.ContainsKey(other.gameObject))
             {
                 touchedDict.Add(other.gameObject, new Cache {
@@ -142,7 +142,7 @@ public class BodyWeapon : Weapon
         }
         */
         Vector3 pos = transform.position;
-        pos.y = 0.5f;
+
 
 
         if (other.TryGetComponent(out Rigidbody rb))
