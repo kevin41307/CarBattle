@@ -636,6 +636,7 @@ GameObject:
   - component: {fileID: 1673874939702570278}
   - component: {fileID: 7079588403894642543}
   - component: {fileID: 3370837789429467885}
+  - component: {fileID: 4018246899362573445}
   m_Layer: 6
   m_Name: MP_Prometheus
   m_TagString: Untagged
@@ -671,7 +672,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5304538415589104297}
   serializedVersion: 2
-  m_Mass: 950
+  m_Mass: 1000
   m_Drag: 0
   m_AngularDrag: 0.05
   m_UseGravity: 1
@@ -880,6 +881,24 @@ CapsuleCollider:
   m_Height: 5.5
   m_Direction: 2
   m_Center: {x: 0, y: 1, z: 0}
+--- !u!114 &4018246899362573445
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5304538415589104297}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e163a08c24197e545875b4d0bbf098db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  antiRoll: 5000
+  wheelLeftFront: {fileID: 6800633344256731846}
+  wheelLeftBack: {fileID: 3955799984349382570}
+  wheelRightFront: {fileID: 3181586443432631420}
+  wheelRightBack: {fileID: 4152477806097026781}
+  COM: {fileID: 5722764294214766739}
 --- !u!1 &5588126555954758544
 GameObject:
   m_ObjectHideFlags: 0

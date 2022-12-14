@@ -54,152 +54,155 @@ public class PrometeoCarController : NetworkBehaviour
 
     //WHEELS
 
-      //[Header("WHEELS")]
+    //[Header("WHEELS")]
 
-      /*
-      The following variables are used to store the wheels' data of the car. We need both the mesh-only game objects and wheel
-      collider components of the wheels. The wheel collider components and 3D meshes of the wheels cannot come from the same
-      game object; they must be separate game objects.
-      */
-      public GameObject frontLeftMesh;
-      public WheelCollider frontLeftCollider;
-      [Space(10)]
-      public GameObject frontRightMesh;
-      public WheelCollider frontRightCollider;
-      [Space(10)]
-      public GameObject rearLeftMesh;
-      public WheelCollider rearLeftCollider;
-      [Space(10)]
-      public GameObject rearRightMesh;
-      public WheelCollider rearRightCollider;
+    /*
+    The following variables are used to store the wheels' data of the car. We need both the mesh-only game objects and wheel
+    collider components of the wheels. The wheel collider components and 3D meshes of the wheels cannot come from the same
+    game object; they must be separate game objects.
+    */
+    public GameObject frontLeftMesh;
+    public WheelCollider frontLeftCollider;
+    [Space(10)]
+    public GameObject frontRightMesh;
+    public WheelCollider frontRightCollider;
+    [Space(10)]
+    public GameObject rearLeftMesh;
+    public WheelCollider rearLeftCollider;
+    [Space(10)]
+    public GameObject rearRightMesh;
+    public WheelCollider rearRightCollider;
 
-    //PARTICLE SYSTEMS
+//PARTICLE SYSTEMS
 
-      [Space(20)]
-      //[Header("EFFECTS")]
-      [Space(10)]
-      //The following variable lets you to set up particle systems in your car
-      public bool useEffects = false;
+    [Space(20)]
+    //[Header("EFFECTS")]
+    [Space(10)]
+    //The following variable lets you to set up particle systems in your car
+    public bool useEffects = false;
 
-      // The following particle systems are used as tire smoke when the car drifts.
-      public ParticleSystem RLWParticleSystem;
-      public ParticleSystem RRWParticleSystem;
+    // The following particle systems are used as tire smoke when the car drifts.
+    public ParticleSystem RLWParticleSystem;
+    public ParticleSystem RRWParticleSystem;
 
-      [Space(10)]
-      // The following trail renderers are used as tire skids when the car loses traction.
-      public TrailRenderer RLWTireSkid;
-      public TrailRenderer RRWTireSkid;
+    [Space(10)]
+    // The following trail renderers are used as tire skids when the car loses traction.
+    public TrailRenderer RLWTireSkid;
+    public TrailRenderer RRWTireSkid;
 
-    //SPEED TEXT (UI)
+//SPEED TEXT (UI)
 
-      [Space(20)]
-      //[Header("UI")]
-      [Space(10)]
-      //The following variable lets you to set up a UI text to display the speed of your car.
-      public bool useUI = false;
-      public Text carSpeedText; // Used to store the UI object that is going to show the speed of the car.
+    [Space(20)]
+    //[Header("UI")]
+    [Space(10)]
+    //The following variable lets you to set up a UI text to display the speed of your car.
+    public bool useUI = false;
+    public Text carSpeedText; // Used to store the UI object that is going to show the speed of the car.
 
-    //SOUNDS
+//SOUNDS
 
-      [Space(20)]
-      //[Header("Sounds")]
-      [Space(10)]
-      //The following variable lets you to set up sounds for your car such as the car engine or tire screech sounds.
-      public bool useSounds = false;
-      public AudioSource carEngineSound; // This variable stores the sound of the car engine.
-      public AudioSource tireScreechSound; // This variable stores the sound of the tire screech (when the car is drifting).
-      float initialCarEngineSoundPitch; // Used to store the initial pitch of the car engine sound.
+    [Space(20)]
+    //[Header("Sounds")]
+    [Space(10)]
+    //The following variable lets you to set up sounds for your car such as the car engine or tire screech sounds.
+    public bool useSounds = false;
+    public AudioSource carEngineSound; // This variable stores the sound of the car engine.
+    public AudioSource tireScreechSound; // This variable stores the sound of the tire screech (when the car is drifting).
+    float initialCarEngineSoundPitch; // Used to store the initial pitch of the car engine sound.
 
-    //CONTROLS
+//CONTROLS
 
-      [Space(20)]
-      //[Header("CONTROLS")]
-      [Space(10)]
-      //The following variables lets you to set up touch controls for mobile devices.
-      public bool useTouchControls = false;
-      public GameObject throttleButton;
-      PrometeoTouchInput throttlePTI;
-      public GameObject reverseButton;
-      PrometeoTouchInput reversePTI;
-      public GameObject turnRightButton;
-      PrometeoTouchInput turnRightPTI;
-      public GameObject turnLeftButton;
-      PrometeoTouchInput turnLeftPTI;
-      public GameObject handbrakeButton;
-      PrometeoTouchInput handbrakePTI;
+    [Space(20)]
+    //[Header("CONTROLS")]
+    [Space(10)]
+    //The following variables lets you to set up touch controls for mobile devices.
+    public bool useTouchControls = false;
+    public GameObject throttleButton;
+    PrometeoTouchInput throttlePTI;
+    public GameObject reverseButton;
+    PrometeoTouchInput reversePTI;
+    public GameObject turnRightButton;
+    PrometeoTouchInput turnRightPTI;
+    public GameObject turnLeftButton;
+    PrometeoTouchInput turnLeftPTI;
+    public GameObject handbrakeButton;
+    PrometeoTouchInput handbrakePTI;
 
-    //CAR DATA
+//CAR DATA
 
-      [HideInInspector]
-      public float carSpeed; // Used to store the speed of the car.
-      [HideInInspector]
-      public bool isDrifting; // Used to know whether the car is drifting or not.
-      [HideInInspector]
-      public bool isTractionLocked; // Used to know whether the traction of the car is locked or not.
+    [HideInInspector]
+    public float carSpeed; // Used to store the speed of the car.
+    [HideInInspector]
+    public bool isDrifting; // Used to know whether the car is drifting or not.
+    [HideInInspector]
+    public bool isTractionLocked; // Used to know whether the traction of the car is locked or not.
 
-    //PRIVATE VARIABLES
+//PRIVATE VARIABLES
 
-      /*
-      IMPORTANT: The following variables should not be modified manually since their values are automatically given via script.
-      */
-      Rigidbody carRigidbody; // Stores the car's rigidbody.
-      float steeringAxis; // Used to know whether the steering wheel has reached the maximum value. It goes from -1 to 1.
-      float throttleAxis; // Used to know whether the throttle has reached the maximum value. It goes from -1 to 1.
-      float driftingAxis;
-      float localVelocityZ;
-      float localVelocityX;
-      bool deceleratingCar;
-      bool touchControlsSetup = false;
-      /*
-      The following variables are used to store information about sideways friction of the wheels (such as
-      extremumSlip,extremumValue, asymptoteSlip, asymptoteValue and stiffness). We change this values to
-      make the car to start drifting.
-      */
-      WheelFrictionCurve FLwheelFriction;
-      float FLWextremumSlip;
-      WheelFrictionCurve FRwheelFriction;
-      float FRWextremumSlip;
-      WheelFrictionCurve RLwheelFriction;
-      float RLWextremumSlip;
-      WheelFrictionCurve RRwheelFriction;
-      float RRWextremumSlip;
+    /*
+    IMPORTANT: The following variables should not be modified manually since their values are automatically given via script.
+    */
+    Rigidbody carRigidbody; // Stores the car's rigidbody.
+    float steeringAxis; // Used to know whether the steering wheel has reached the maximum value. It goes from -1 to 1.
+    float throttleAxis; // Used to know whether the throttle has reached the maximum value. It goes from -1 to 1.
+    float driftingAxis;
+    float localVelocityZ;
+    float localVelocityX;
+    bool deceleratingCar;
+    bool touchControlsSetup = false;
+    /*
+    The following variables are used to store information about sideways friction of the wheels (such as
+    extremumSlip,extremumValue, asymptoteSlip, asymptoteValue and stiffness). We change this values to
+    make the car to start drifting.
+    */
+    WheelFrictionCurve FLwheelFriction;
+    float FLWextremumSlip;
+    WheelFrictionCurve FRwheelFriction;
+    float FRWextremumSlip;
+    WheelFrictionCurve RLwheelFriction;
+    float RLWextremumSlip;
+    WheelFrictionCurve RRwheelFriction;
+    float RRWextremumSlip;
 
 
     // Start is called before the first frame update
     void Start()
     {
 
-      //In this part, we set the 'carRigidbody' value with the Rigidbody attached to this
-      //gameObject. Also, we define the center of mass of the car with the Vector3 given
-      //in the inspector.
-      carRigidbody = gameObject.GetComponent<Rigidbody>();
-      carRigidbody.centerOfMass = bodyMassCenter;
+        //In this part, we set the 'carRigidbody' value with the Rigidbody attached to this
+        //gameObject. Also, we define the center of mass of the car with the Vector3 given
+        //in the inspector.
+        carRigidbody = gameObject.GetComponent<Rigidbody>();
+        carRigidbody.centerOfMass = bodyMassCenter;
 
-      //Initial setup to calculate the drift value of the car. This part could look a bit
-      //complicated, but do not be afraid, the only thing we're doing here is to save the default
-      //friction values of the car wheels so we can set an appropiate drifting value later.
-      FLwheelFriction = new WheelFrictionCurve ();
+        //Initial setup to calculate the drift value of the car. This part could look a bit
+        //complicated, but do not be afraid, the only thing we're doing here is to save the default
+        //friction values of the car wheels so we can set an appropiate drifting value later.
+        FLwheelFriction = new WheelFrictionCurve ();
         FLwheelFriction.extremumSlip = frontLeftCollider.sidewaysFriction.extremumSlip;
         FLWextremumSlip = frontLeftCollider.sidewaysFriction.extremumSlip;
         FLwheelFriction.extremumValue = frontLeftCollider.sidewaysFriction.extremumValue;
         FLwheelFriction.asymptoteSlip = frontLeftCollider.sidewaysFriction.asymptoteSlip;
         FLwheelFriction.asymptoteValue = frontLeftCollider.sidewaysFriction.asymptoteValue;
         FLwheelFriction.stiffness = frontLeftCollider.sidewaysFriction.stiffness;
-      FRwheelFriction = new WheelFrictionCurve ();
+
+        FRwheelFriction = new WheelFrictionCurve ();
         FRwheelFriction.extremumSlip = frontRightCollider.sidewaysFriction.extremumSlip;
         FRWextremumSlip = frontRightCollider.sidewaysFriction.extremumSlip;
         FRwheelFriction.extremumValue = frontRightCollider.sidewaysFriction.extremumValue;
         FRwheelFriction.asymptoteSlip = frontRightCollider.sidewaysFriction.asymptoteSlip;
         FRwheelFriction.asymptoteValue = frontRightCollider.sidewaysFriction.asymptoteValue;
         FRwheelFriction.stiffness = frontRightCollider.sidewaysFriction.stiffness;
-      RLwheelFriction = new WheelFrictionCurve ();
+
+        RLwheelFriction = new WheelFrictionCurve ();
         RLwheelFriction.extremumSlip = rearLeftCollider.sidewaysFriction.extremumSlip;
         RLWextremumSlip = rearLeftCollider.sidewaysFriction.extremumSlip;
         RLwheelFriction.extremumValue = rearLeftCollider.sidewaysFriction.extremumValue;
         RLwheelFriction.asymptoteSlip = rearLeftCollider.sidewaysFriction.asymptoteSlip;
         RLwheelFriction.asymptoteValue = rearLeftCollider.sidewaysFriction.asymptoteValue;
         RLwheelFriction.stiffness = rearLeftCollider.sidewaysFriction.stiffness;
-      RRwheelFriction = new WheelFrictionCurve ();
+
+        RRwheelFriction = new WheelFrictionCurve ();
         RRwheelFriction.extremumSlip = rearRightCollider.sidewaysFriction.extremumSlip;
         RRWextremumSlip = rearRightCollider.sidewaysFriction.extremumSlip;
         RRwheelFriction.extremumValue = rearRightCollider.sidewaysFriction.extremumValue;
@@ -208,64 +211,79 @@ public class PrometeoCarController : NetworkBehaviour
         RRwheelFriction.stiffness = rearRightCollider.sidewaysFriction.stiffness;
 
         // We save the initial pitch of the car engine sound.
-        if(carEngineSound != null){
-          initialCarEngineSoundPitch = carEngineSound.pitch;
+        if(carEngineSound != null)
+        {
+            initialCarEngineSoundPitch = carEngineSound.pitch;
         }
 
         // We invoke 2 methods inside this script. CarSpeedUI() changes the text of the UI object that stores
         // the speed of the car and CarSounds() controls the engine and drifting sounds. Both methods are invoked
         // in 0 seconds, and repeatedly called every 0.1 seconds.
-        if(useUI){
-          InvokeRepeating("CarSpeedUI", 0f, 0.1f);
-        }else if(!useUI){
-          if(carSpeedText != null){
-            carSpeedText.text = "0";
-          }
+        if(useUI)
+        {
+              InvokeRepeating("CarSpeedUI", 0f, 0.1f);
+        }
+        else if(!useUI)
+        {
+            if(carSpeedText != null)
+            {
+                carSpeedText.text = "0";
+            }
         }
 
-        if(useSounds){
-          InvokeRepeating("CarSounds", 0f, 0.1f);
-        }else if(!useSounds){
-          if(carEngineSound != null){
-            carEngineSound.Stop();
-          }
-          if(tireScreechSound != null){
-            tireScreechSound.Stop();
-          }
+        if(useSounds)
+        {
+            InvokeRepeating("CarSounds", 0f, 0.1f);
+        }else if(!useSounds)
+        {
+            if(carEngineSound != null)
+            {
+                carEngineSound.Stop();
+            }
+            if(tireScreechSound != null)
+            {
+                tireScreechSound.Stop();
+            }
         }
 
-        if(!useEffects){
-          if(RLWParticleSystem != null){
-            RLWParticleSystem.Stop();
-          }
-          if(RRWParticleSystem != null){
-            RRWParticleSystem.Stop();
-          }
-          if(RLWTireSkid != null){
-            RLWTireSkid.emitting = false;
-          }
-          if(RRWTireSkid != null){
-            RRWTireSkid.emitting = false;
-          }
+        if(!useEffects)
+        {
+            if(RLWParticleSystem != null)
+            {
+                RLWParticleSystem.Stop();
+            }
+            if(RRWParticleSystem != null)
+            {
+                RRWParticleSystem.Stop();
+            }
+            if(RLWTireSkid != null)
+            {
+                RLWTireSkid.emitting = false;
+            }
+            if(RRWTireSkid != null)
+            {
+                RRWTireSkid.emitting = false;
+            }
         }
 
-        if(useTouchControls){
-          if(throttleButton != null && reverseButton != null &&
-          turnRightButton != null && turnLeftButton != null
-          && handbrakeButton != null){
-
-            throttlePTI = throttleButton.GetComponent<PrometeoTouchInput>();
-            reversePTI = reverseButton.GetComponent<PrometeoTouchInput>();
-            turnLeftPTI = turnLeftButton.GetComponent<PrometeoTouchInput>();
-            turnRightPTI = turnRightButton.GetComponent<PrometeoTouchInput>();
-            handbrakePTI = handbrakeButton.GetComponent<PrometeoTouchInput>();
-            touchControlsSetup = true;
-
-          }else{
-            String ex = "Touch controls are not completely set up. You must drag and drop your scene buttons in the" +
-            " PrometeoCarController component.";
-            Debug.LogWarning(ex);
-          }
+        if(useTouchControls)
+        {
+            if(throttleButton != null && reverseButton != null && 
+                turnRightButton != null && turnLeftButton != null && handbrakeButton != null)
+            {
+                throttlePTI = throttleButton.GetComponent<PrometeoTouchInput>();
+                reversePTI = reverseButton.GetComponent<PrometeoTouchInput>();
+                turnLeftPTI = turnLeftButton.GetComponent<PrometeoTouchInput>();
+                turnRightPTI = turnRightButton.GetComponent<PrometeoTouchInput>();
+                handbrakePTI = handbrakeButton.GetComponent<PrometeoTouchInput>();
+                touchControlsSetup = true;
+            }
+            else
+            {
+                String ex = "Touch controls are not completely set up. You must drag and drop your scene buttons in the" +
+                " PrometeoCarController component.";
+                Debug.LogWarning(ex);
+            }
         }
 
     }
@@ -297,112 +315,113 @@ public class PrometeoCarController : NetworkBehaviour
         if (useTouchControls && touchControlsSetup)
         {
 
-        if(throttlePTI.buttonPressed)
-        {
-            CancelInvoke("DecelerateCar");
-            deceleratingCar = false;
-            GoForward();
-        }
-        if(reversePTI.buttonPressed)
-        {
-            CancelInvoke("DecelerateCar");
-            deceleratingCar = false;
-            GoReverse();
-        }
+            if(throttlePTI.buttonPressed)
+            {
+                CancelInvoke("DecelerateCar");
+                deceleratingCar = false;
+                GoForward();
+            }
+            if(reversePTI.buttonPressed)
+            {
+                CancelInvoke("DecelerateCar");
+                deceleratingCar = false;
+                GoReverse();
+            }
 
-        if(turnLeftPTI.buttonPressed)
-        {
-            TurnLeft();
-        }
-        if(turnRightPTI.buttonPressed)
-        {
-            TurnRight();
-        }
-        if(handbrakePTI.buttonPressed)
-        {
-            CancelInvoke("DecelerateCar");
-            deceleratingCar = false;
-            Handbrake();
-        }
-        if(!handbrakePTI.buttonPressed)
-        {
-            RecoverTraction();
-        }
-        if((!throttlePTI.buttonPressed && !reversePTI.buttonPressed))
-        {
-            ThrottleOff();
-        }
-        if((!reversePTI.buttonPressed && !throttlePTI.buttonPressed) && !handbrakePTI.buttonPressed && !deceleratingCar)
-        {
-            InvokeRepeating("DecelerateCar", 0f, 0.1f);
-            deceleratingCar = true;
-        }
-        if(!turnLeftPTI.buttonPressed && !turnRightPTI.buttonPressed && steeringAxis != 0f)
-        {
-            ResetSteeringAngle();
-        }
+            if(turnLeftPTI.buttonPressed)
+            {
+                TurnLeft();
+            }
+            if(turnRightPTI.buttonPressed)
+            {
+                TurnRight();
+            }
+            if(handbrakePTI.buttonPressed)
+            {
+                CancelInvoke("DecelerateCar");
+                deceleratingCar = false;
+                Handbrake();
+            }
+            if(!handbrakePTI.buttonPressed)
+            {
+                RecoverTraction();
+            }
+            if((!throttlePTI.buttonPressed && !reversePTI.buttonPressed))
+            {
+                ThrottleOff();
+            }
+            if((!reversePTI.buttonPressed && !throttlePTI.buttonPressed) && !handbrakePTI.buttonPressed && !deceleratingCar)
+            {
+                InvokeRepeating("DecelerateCar", 0f, 0.1f);
+                deceleratingCar = true;
+            }
+            if(!turnLeftPTI.buttonPressed && !turnRightPTI.buttonPressed && steeringAxis != 0f)
+            {
+                ResetSteeringAngle();
+            }
 
-        }else{
+        }
+        else
+        {
+            if(Input.GetKey(KeyCode.W))
+            {
+                CancelInvoke("DecelerateCar");
+                deceleratingCar = false;
+                GoForward();
+            }
+            if(Input.GetKey(KeyCode.S))
+            {
+                CancelInvoke("DecelerateCar");
+                deceleratingCar = false;
+                GoReverse();
+            }
 
-        if(Input.GetKey(KeyCode.W))
-        {
-            CancelInvoke("DecelerateCar");
-            deceleratingCar = false;
-            GoForward();
-        }
-        if(Input.GetKey(KeyCode.S))
-        {
-            CancelInvoke("DecelerateCar");
-            deceleratingCar = false;
-            GoReverse();
-        }
+            if(Input.GetKey(KeyCode.A))
+            {
+                TurnLeft();
+            }
+            if(Input.GetKey(KeyCode.D))
+            {
+                TurnRight();
+            }
+            if(Input.GetKey(KeyCode.Space))
+            {
+                CancelInvoke("DecelerateCar");
+                deceleratingCar = false;
+                Handbrake();
+            }
 
-        if(Input.GetKey(KeyCode.A))
-        {
-            TurnLeft();
-        }
-        if(Input.GetKey(KeyCode.D))
-        {
-            TurnRight();
-        }
-        if(Input.GetKey(KeyCode.Space))
-        {
-            CancelInvoke("DecelerateCar");
-            deceleratingCar = false;
-            Handbrake();
-        }
-
-        //Kevin Modified
+            //Kevin Modified
         
-        if (Input.GetKeyDown(KeyCode.Z))
-        {
-            attackCountTimer = attackCount_MaxResetTimer;
-            attackCount++;
-            anim.SetInteger("AttackCount", attackCount);
-        }
-        attackCountTimer -= Time.deltaTime;
-        if(attackCountTimer <= 0 && attackCount > 0)
-        {
-            attackCount = 0;
-            anim.SetInteger("AttackCount", attackCount);
-        }
+            if (Input.GetKeyDown(KeyCode.Z))
+            {
+                attackCountTimer = attackCount_MaxResetTimer;
+                attackCount++;
+                anim.SetInteger("AttackCount", attackCount);
+            }
+            attackCountTimer -= Time.deltaTime;
+            if(attackCountTimer <= 0 && attackCount > 0)
+            {
+                attackCount = 0;
+                anim.SetInteger("AttackCount", attackCount);
+            }
 
-        if (Input.GetKeyUp(KeyCode.Space))
-        {
-            RecoverTraction();
-        }
-        if((!Input.GetKey(KeyCode.S) && !Input.GetKey(KeyCode.W)))
-        {
-            ThrottleOff();
-        }
-        if((!Input.GetKey(KeyCode.S) && !Input.GetKey(KeyCode.W)) && !Input.GetKey(KeyCode.Space) && !deceleratingCar){
-            InvokeRepeating("DecelerateCar", 0f, 0.1f);
-            deceleratingCar = true;
-        }
-        if(!Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.D) && steeringAxis != 0f)
-        {
-            ResetSteeringAngle();
-        }
+            if (Input.GetKeyUp(KeyCode.Space))
+            {
+                RecoverTraction();
+            }
+            if((!Input.GetKey(KeyCode.S) && !Input.GetKey(KeyCode.W)))
+            {
+                ThrottleOff();
+            }
+            if((!Input.GetKey(KeyCode.S) && !Input.GetKey(KeyCode.W)) && !Input.GetKey(KeyCode.Space) && !deceleratingCar){
+                InvokeRepeating("DecelerateCar", 0f, 0.1f);
+                deceleratingCar = true;
+            }
+            if(!Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.D) && steeringAxis != 0f)
+            {
+                ResetSteeringAngle();
+            }
       }
       // We call the method AnimateWheelMeshes() in order to match the wheel collider movements with the 3D meshes of the wheels.
       //AnimateWheelMeshes();
@@ -812,6 +831,5 @@ public class PrometeoCarController : NetworkBehaviour
         driftingAxis = 0f;
       }
     }
-
 
 }
